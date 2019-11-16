@@ -1,5 +1,5 @@
 <template>
-	<div class="navbar navbar--visible">
+	<div class="navbar" v-show="visible">
 		<div class="navbar_section">
 			Navigation bar
 		</div>
@@ -27,9 +27,21 @@
 </template>
 
 <script>
-	function navbar_toggleVisibile()
-	{	/* toggle navbar visibility */
-		document.querySelector(".navbar").classList.toggle("navbar--visible");
+	import { EventBus } from '../main.js';
+
+	export default {
+		data() {
+			return {
+				visible: false
+			}
+		},
+		created() {
+			EventBus.$on('navbar-toggleVisibile', () => {
+				console.log("received request");
+				this.visible = !this.visible;
+				console.log(this.visible);
+			});
+		}
 	}
 </script>
 
@@ -42,8 +54,8 @@
 		background: #1b1c1d;
 		border-right: 2px solid #1b1c1d;
 		/* navbar not visible */
-		left: -200px;
-		opacity: 0;
+		left: 0px;
+		opacity: 1;
 		transition: left 0.25s ease-in-out, opacity 0.25s ease-in-out;
 	}
 

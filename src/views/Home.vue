@@ -10,10 +10,11 @@
 
 	export default {
 		data() {
+			return {
+			}
 		},
 		methods: {
 			toggleNavbar() {
-				console.log("wanted to toggle!")
 				EventBus.$emit('navbar-toggleVisibile');
 			}
 		}

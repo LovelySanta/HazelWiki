@@ -1,29 +1,31 @@
 <template>
-	<div class="navbar" v-show="visible">
-		<div class="navbar_section">
-			Navigation bar
-		</div>
+	<transition name = "navbar_fade">
+		<div class="navbar" v-show="visible">
+			<div class="navbar_section">
+				Navigation bar
+			</div>
 
-		<div class="navbar_section">
-			<div class="navbar_section_header">Testing</div>
-			<router-link to="/" class="navbar_item">
-				<span class="material-icons">home</span>Home
-			</router-link>
-			<router-link to="/About" class="navbar_item">
-				<span class="material-icons">info</span>About
-			</router-link>
+			<div class="navbar_section">
+				<div class="navbar_section_header">Testing</div>
+				<router-link to="/" class="navbar_item">
+					<span class="material-icons">home</span>Home
+				</router-link>
+				<router-link to="/About" class="navbar_item">
+					<span class="material-icons">info</span>About
+				</router-link>
+			</div>
+			
+			<div class="navbar_section">
+				<div class="navbar_section_header">More testing</div>
+				<a href="#" class="navbar_item">
+					<span class="material-icons">question_answer</span>Forum
+				</a>
+				<a href="#" class="navbar_item">
+					<span class="material-icons">menu_book</span>API
+				</a>
+			</div>
 		</div>
-		
-		<div class="navbar_section">
-			<div class="navbar_section_header">More testing</div>
-			<a href="#" class="navbar_item">
-				<span class="material-icons">question_answer</span>Forum
-			</a>
-			<a href="#" class="navbar_item">
-				<span class="material-icons">menu_book</span>API
-			</a>
-		</div>
-	</div>
+	</transition>
 </template>
 
 <script>
@@ -37,9 +39,7 @@
 		},
 		created() {
 			EventBus.$on('navbar-toggleVisibile', () => {
-				console.log("received request");
 				this.visible = !this.visible;
-				console.log(this.visible);
 			});
 		}
 	}
@@ -49,20 +49,21 @@
 	.navbar {
 		position: fixed;
 		top: 0;
+		left: 0px;
 		width: 200px;
 		height: 100%;
 		background: #1b1c1d;
 		border-right: 2px solid #1b1c1d;
-		/* navbar not visible */
-		left: 0px;
-		opacity: 1;
-		transition: left 0.25s ease-in-out, opacity 0.25s ease-in-out;
 	}
 
-	.navbar--visible {
-		/* navbar visible */
-		left: 0;
-		opacity: 1;
+	.navbar_fade-enter-active,
+	.navbar_fade-leave-active {
+		transition: opacity .3s ease-in-out, transform 0.3s ease;
+	}
+	.navbar_fade-enter,
+	.navbar_fade-leave-to {
+		opacity: 0;
+		left: -200px;
 	}
 
 	.navbar_section {

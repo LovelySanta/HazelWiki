@@ -1,11 +1,11 @@
 <template>
-	<router-link @click.native="closeNav" class="navbar_item" v-bind="attrs">
+	<router-link @click.native="closeNav" class="navbar_link" v-bind="attrs">
 		<span class="material-icons">{{ iconName }}</span>{{ linkName }}
 	</router-link>
 </template>
 
 <script>
-	import { EventBus } from '@/main.js';
+	import { EventBus } from '@/main.js'
 
 	export default {
 		props: {
@@ -42,21 +42,21 @@
 <style scoped lang="scss" rel="stylesheet/scss">
 	@import "@/scss/NavBar.scss";
 
-	.navbar_item {
+	.navbar_link {
 		display: flex;
 		color: $NavBar_secundary_color;
-		font-size: 0.85em;
+		font-size: 0.85rem;
 	}
 
-	.navbar_item:hover {
+	.navbar_link:hover {
 		color: $NavBar_primary_color;
 	}
 
-	.navbar_item:active {
+	.navbar_link:active {
 		background: $NavBar_border;
 	}
 
-	.navbar_item .material-icons {
+	.navbar_link .material-icons {
 		margin-right: 12px;
 	}
 </style>

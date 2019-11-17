@@ -14,7 +14,7 @@
 </template>
 
 <script>
-	import { EventBus } from '@/main.js';
+	import { EventBus } from '@/main.js'
 	import NavBarSection from './NavBarSection.vue'
 	import NavBarLink from './NavBarLink.vue'
 

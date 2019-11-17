@@ -1,43 +1,30 @@
 <template>
 	<div>
-		<NavBar :toc="navBarContent" />
+		<NavBar :toc="navBarLayout" />
+		<Header />
 		<router-view/>
 	</div>
 </template>
 
 <script>
 	import NavBar from './components/Navbar/Navbar';
+	import Header from './components/Header/Header';
 
 	import '../node_modules/materialize-css/dist/css/materialize.min.css';
 	import '../node_modules/materialize-css/dist/js/materialize.min.js';
+
+	const navBarLayout = require('./assets/NavBarLayout.json');
 
 	export default {
 		name: 'App',
 		data() {
 			return {
-				navBarContent: [
-					{
-						header: "Navigation bar"
-					},
-					{
-						header: "Testing",
-						links: [
-							{ to: "/"     , icon: "home", name: "Home"},
-							{ to: "/About", icon: "info", name: "About"},
-						]
-					},
-					{
-						header: "More testing",
-						links: [
-							{ to: "#", icon: "question_answer", name: "Forum"},
-							{ to: "#", icon: "menu_book"      , name: "API"},
-						]
-					}
-				],
+				navBarLayout: navBarLayout,
 			}
 		},
 		components: {
-			NavBar
+			Header,
+			NavBar,
 		}
 	}
 </script>

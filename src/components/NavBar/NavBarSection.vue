@@ -22,11 +22,10 @@
 	.navbar_section {
 		align-items: center;
 		border-bottom: 1px solid $NavBar_border;
-		background: inherit;
 		color: $NavBar_primary_color;
 		padding: 12px;
 		font-weight: bolder;
-		font-size: 1em;
+		font-size: 1rem;
 		text-decoration: none;
 	}
 

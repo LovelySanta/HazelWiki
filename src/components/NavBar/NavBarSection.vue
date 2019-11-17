@@ -6,14 +6,14 @@
 </template>
 
 <script>
-    export default {
-        props: {
-            header: {
-                String,
+	export default {
+		props: {
+			header: {
+				type: String,
 				required: true
-            },
+			}
 		}
-    }
+	}
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">

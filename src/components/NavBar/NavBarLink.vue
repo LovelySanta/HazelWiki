@@ -5,38 +5,38 @@
 </template>
 
 <script>
-    import { EventBus } from '@/main.js';
+	import { EventBus } from '@/main.js';
 
-    export default {
-        props: {
-            iconName: {
-                String,
-                required: true
-            },
-            linkName: {
-                String,
-                required: true
-            },
-        },
+	export default {
+		props: {
+			iconName: {
+				type: String,
+				required: true
+			},
+			linkName: {
+				type: String,
+				required: true
+			},
+		},
 		computed: {
-            // Getting the to property out of the parent, and making sure it gets down to the router-link
+			// Getting the to property out of the parent, and making sure it gets down to the router-link
 			//
 			// NOTE: In the future, the default should probably go to 404 if no route is given
-            to() {
-                return this.$attrs.to || "/"
+			to() {
+				return this.$attrs.to || "/"
 			},
 			// Redefine the attributes, so vue will net us set them in the child.
 			attrs() {
-                const { ...attrs } = this.$attrs;
-                return attrs
+				const { ...attrs } = this.$attrs;
+				return attrs
 			}
 		},
 		methods: {
 			closeNav() {
-                EventBus.$emit('navbar-closeVisibile');
+				EventBus.$emit('navbar-closeVisibile');
 			}
 		}
-    }
+	}
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">

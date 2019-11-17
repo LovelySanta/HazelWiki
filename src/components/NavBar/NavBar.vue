@@ -1,46 +1,62 @@
 <template>
 	<transition name = "navbar_fade">
 		<div class="navbar" v-show="visible">
-			<navbar-section header="Navigation bar" />
-
-			<navbar-section header="Testing">
-				<navbar-link to="/" icon-name="home" link-name="Home" />
-				<navbar-link to="/About" icon-name="info" link-name="About" />
-			</navbar-section>
-
-			<navbar-section header="More testing">
-				<navbar-link to="/" icon-name="question_answer" link-name="Forum" />
-				<navbar-link to="/About" icon-name="menu_book" link-name="API" />
+			<navbar-section v-for="(section, index) in content" :key="index"
+				:header="section.header">
+				<navbar-link v-for="(link, index) in section.links" :key="index"
+					:to="link.to"
+					:icon-name="link.icon"
+					:link-name="link.name"
+				/>
 			</navbar-section>
 		</div>
 	</transition>
 </template>
 
 <script>
-    import { EventBus } from '@/main.js';
-    import NavBarSection from './NavBarSection.vue'
-    import NavBarLink from './NavBarLink.vue'
+	import { EventBus } from '@/main.js';
+	import NavBarSection from './NavBarSection.vue'
+	import NavBarLink from './NavBarLink.vue'
 
-    export default {
-        data() {
-            return {
-                visible: false
-            }
-        },
-        created() {
-            EventBus.$on('navbar-toggleVisibile', () => {
-                this.visible = !this.visible;
-            });
-
-            EventBus.$on('navbar-closeVisibile', () => {
-                this.visible = false;
+	export default {
+		data() {
+			return {
+				visible: false,
+				content: [
+					{
+						header: "Navigation bar"
+					},
+					{
+						header: "Testing",
+						links: [
+							{ to: "/"     , icon: "home", name: "Home"},
+							{ to: "/About", icon: "info", name: "About"},
+						]
+					},
+					{
+						header: "More testing",
+						links: [
+							{ to: "#", icon: "question_answer", name: "Forum"},
+							{ to: "#", icon: "menu_book"      , name: "API"},
+						]
+					}
+				]
+			}
+		},
+		created() {
+			EventBus.$on('navbar-toggleVisibile', () => {
+				this.visible = !this.visible;
 			});
-        },
-        components: {
-            'navbar-section': NavBarSection,
-            'navbar-link': NavBarLink
+
+			EventBus.$on('navbar-closeVisibile', () => {
+				this.visible = false;
+			});
+		},
+		components: {
+			'navbar-section': NavBarSection,
+			'navbar-link': NavBarLink
 		}
-    }
+	}
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">

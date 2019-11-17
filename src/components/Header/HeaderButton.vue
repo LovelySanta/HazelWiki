@@ -32,11 +32,18 @@
 
 	.header_button {
 		border-right: 1px solid $Header_border;
-		padding: $Header_padding;
 		color: $Header_color;
 		margin: 0;
 		text-decoration: none;
+		padding: $Header_padding;
 		//vertical-align: middle;
+		height: 100%;
+		display: inline-flex;
+		align-items: center;
+		> span {
+			margin-right: 6px;
+		}
+
 	}
 
 	.header_button:hover {

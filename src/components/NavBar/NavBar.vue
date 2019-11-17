@@ -1,0 +1,105 @@
+<template>
+	<transition name = "navbar_fade">
+		<div class="navbar" v-show="visible">
+			<navbar-section header="Navigation bar" />
+
+			<navbar-section header="Testing">
+				<navbar-link to="/" icon-name="home" link-name="Home" />
+				<navbar-link to="/About" icon-name="info" link-name="About" />
+			</navbar-section>
+
+			<navbar-section header="More testing">
+				<navbar-link to="/" icon-name="question_answer" link-name="Forum" />
+				<navbar-link to="/About" icon-name="menu_book" link-name="API" />
+			</navbar-section>
+		</div>
+	</transition>
+</template>
+
+<script>
+    import { EventBus } from '@/main.js';
+    import NavBarSection from './NavBarSection.vue'
+    import NavBarLink from './NavBarLink.vue'
+
+    export default {
+        data() {
+            return {
+                visible: false
+            }
+        },
+        created() {
+            EventBus.$on('navbar-toggleVisibile', () => {
+                this.visible = !this.visible;
+            });
+        },
+        components: {
+            'navbar-section': NavBarSection,
+            'navbar-link': NavBarLink
+		}
+    }
+</script>
+
+<style scoped lang="scss" rel="stylesheet/scss">
+	.navbar {
+		position: fixed;
+		top: 0px;
+		left: 0px;
+		width: 200px;
+		height: 100%;
+		background: #1b1c1d;
+		border-right: 2px solid #1b1c1d;
+	}
+
+	.navbar_fade-enter-active,
+	.navbar_fade-leave-active {
+		transition: opacity .3s ease-in-out, transform 0.3s ease;
+	}
+	.navbar_fade-enter,
+	.navbar_fade-leave-to {
+		opacity: 0;
+		left: -200px;
+	}
+
+	.navbar_section {
+		align-items: center;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+		background: inherit;
+		color: #ffffff;
+		padding: 12px;
+		font-weight: bolder;
+		font-size: 1em;
+		text-decoration: none;
+	}
+
+	.navbar_section_header {
+		align-items: inherit;
+		background: inherit;
+		color: inherit;
+		padding-bottom: .5em;
+		font-weight: inherit;
+		font-size: inherit;
+		text-decoration: inherit;
+	}
+
+	.navbar_item {
+		display: flex;
+		align-items: inherit;
+		background: inherit;
+		color: rgba(255, 255, 255, .5);
+		font-weight: inherit;
+		font-size: 0.85em;
+		text-decoration: inherit;
+	}
+
+	.navbar_item .material-icons {
+		margin-right: 12px;
+	}
+
+	.navbar_item:hover {
+		color: #ffffff;
+	}
+
+	.navbar_item:active {
+		background: rgba(255, 255, 255, 0.08);
+	}
+</style>

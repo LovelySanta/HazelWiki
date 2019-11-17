@@ -1,6 +1,6 @@
 <template>
 	<router-link @click.native="closeNav" class="navbar_link" v-bind="attrs">
-		<span class="material-icons">{{ iconName }}</span>{{ linkName }}
+		<i class="material-icons">{{ iconName }}</i>{{ linkName }}
 	</router-link>
 </template>
 
@@ -45,7 +45,7 @@
 	.navbar_link {
 		display: flex;
 		color: $NavBar_secundary_color;
-		font-size: 0.85rem;
+		font-size: 0.85em;
 	}
 
 	.navbar_link:hover {

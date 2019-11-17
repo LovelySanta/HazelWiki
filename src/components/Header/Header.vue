@@ -1,14 +1,17 @@
 <template>
 	<div class="header">
-		<HeaderButton eventName='navbar-toggleVisibile' icon='menu' label='Menu' />
+		<HeaderButton eventName='navbar-toggleVisibile' icon='menu' label='' />
+		<HeaderLabel icon='home' label='Pagetitle' />
 	</div>
 </template>
 
 <script>
+	import HeaderLabel from "./HeaderLabel.vue";
 	import HeaderButton from "./HeaderButton.vue";
 
 	export default {
 		components: {
+			HeaderLabel,
 			HeaderButton
 		}
 	}
@@ -24,5 +27,6 @@
 		width: 100%;
 		margin: 0;
 		background: $Header_background;
+		display: flex;
 	}
 </style>

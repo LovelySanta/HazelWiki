@@ -1,13 +1,12 @@
 <template>
 	<a class="header_button" v-on:click="buttonAction(eventName)">
-		<span class="material-icons" v-if="icon !== ''">{{ icon }}</span>
-		<span class="header_button_spacer" v-if="icon !== '' && label !== ''" />
-		<span v-if="label !== ''">{{ label }}</span>
+		<HeaderLabel :icon="icon" :label="label" />
 	</a>
 </template>
 
 <script>
 	import { EventBus } from '@/main.js'
+	import HeaderLabel from "./HeaderLabel.vue";
 
 	export default {
 		props: {
@@ -30,6 +29,9 @@
 			buttonAction(eventName) {
 				EventBus.$emit(eventName);
 			}
+		},
+		components: {
+			HeaderLabel
 		}
 	}
 </script>
@@ -38,22 +40,15 @@
 	@import "@/scss/Header.scss";
 
 	.header_button {
-		border-right: 1px solid $Header_border;
-		color: $Header_color;
 		margin: 0;
-		text-decoration: none;
-		padding: $Header_padding;
-		height: 100%;
+		padding: 0;
 		display: inline-flex;
 		align-items: center;
+		text-decoration: none;
 		cursor: pointer;
 	}
 
 	.header_button:hover {
 		background: $Header_border;
-	}
-
-	.header_button_spacer {
-		margin-right: 6px;
 	}
 </style>

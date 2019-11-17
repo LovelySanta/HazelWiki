@@ -25,7 +25,7 @@
 		color: $NavBar_primary_color;
 		padding: 12px;
 		font-weight: bolder;
-		font-size: 1rem;
+		font-size: 1em;
 		text-decoration: none;
 	}
 

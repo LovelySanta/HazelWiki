@@ -1,10 +1,12 @@
 <template>
-	<router-link class="navbar_item" v-bind="attrs">
+	<router-link @click.native="closeNav" class="navbar_item" v-bind="attrs">
 		<span class="material-icons">{{ iconName }}</span>{{ linkName }}
 	</router-link>
 </template>
 
 <script>
+    import { EventBus } from '@/main.js';
+
     export default {
         props: {
             iconName: {
@@ -28,6 +30,36 @@
                 const { ...attrs } = this.$attrs;
                 return attrs
 			}
+		},
+		methods: {
+			closeNav() {
+                EventBus.$emit('navbar-closeVisibile');
+			}
 		}
     }
 </script>
+
+<style scoped lang="scss" rel="stylesheet/scss">
+	.navbar_item {
+		display: flex;
+		align-items: inherit;
+		background: inherit;
+		color: rgba(255, 255, 255, .5);
+		font-weight: inherit;
+		font-size: 0.85em;
+		text-decoration: inherit;
+	}
+
+	.navbar_item .material-icons {
+		margin-right: 12px;
+	}
+
+	.navbar_item:hover {
+		color: #ffffff;
+	}
+
+	.navbar_item:active {
+		background: rgba(255, 255, 255, 0.08);
+	}
+</style>
+

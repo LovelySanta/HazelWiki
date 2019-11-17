@@ -31,6 +31,10 @@
             EventBus.$on('navbar-toggleVisibile', () => {
                 this.visible = !this.visible;
             });
+
+            EventBus.$on('navbar-closeVisibile', () => {
+                this.visible = false;
+			});
         },
         components: {
             'navbar-section': NavBarSection,
@@ -54,52 +58,10 @@
 	.navbar_fade-leave-active {
 		transition: opacity .3s ease-in-out, transform 0.3s ease;
 	}
+
 	.navbar_fade-enter,
 	.navbar_fade-leave-to {
 		opacity: 0;
 		left: -200px;
-	}
-
-	.navbar_section {
-		align-items: center;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-		background: inherit;
-		color: #ffffff;
-		padding: 12px;
-		font-weight: bolder;
-		font-size: 1em;
-		text-decoration: none;
-	}
-
-	.navbar_section_header {
-		align-items: inherit;
-		background: inherit;
-		color: inherit;
-		padding-bottom: .5em;
-		font-weight: inherit;
-		font-size: inherit;
-		text-decoration: inherit;
-	}
-
-	.navbar_item {
-		display: flex;
-		align-items: inherit;
-		background: inherit;
-		color: rgba(255, 255, 255, .5);
-		font-weight: inherit;
-		font-size: 0.85em;
-		text-decoration: inherit;
-	}
-
-	.navbar_item .material-icons {
-		margin-right: 12px;
-	}
-
-	.navbar_item:hover {
-		color: #ffffff;
-	}
-
-	.navbar_item:active {
-		background: rgba(255, 255, 255, 0.08);
 	}
 </style>

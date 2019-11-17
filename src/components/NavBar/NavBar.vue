@@ -1,7 +1,7 @@
 <template>
 	<transition name = "navbar_fade">
 		<div class="navbar" v-show="visible">
-			<navbar-section v-for="(section, index) in content" :key="index"
+			<navbar-section v-for="(section, index) in toc" :key="index"
 				:header="section.header">
 				<navbar-link v-for="(link, index) in section.links" :key="index"
 					:to="link.to"
@@ -19,28 +19,15 @@
 	import NavBarLink from './NavBarLink.vue'
 
 	export default {
+		props: {
+			toc: {
+				type: Array,
+				required: true
+			}
+		},
 		data() {
 			return {
 				visible: false,
-				content: [
-					{
-						header: "Navigation bar"
-					},
-					{
-						header: "Testing",
-						links: [
-							{ to: "/"     , icon: "home", name: "Home"},
-							{ to: "/About", icon: "info", name: "About"},
-						]
-					},
-					{
-						header: "More testing",
-						links: [
-							{ to: "#", icon: "question_answer", name: "Forum"},
-							{ to: "#", icon: "menu_book"      , name: "API"},
-						]
-					}
-				]
 			}
 		},
 		created() {
@@ -60,14 +47,17 @@
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">
+	@import "@/scss/NavBar.scss";
+
 	.navbar {
 		position: fixed;
 		top: 0px;
 		left: 0px;
-		width: 200px;
+		width: $NavBar_width;
 		height: 100%;
-		background: #1b1c1d;
-		border-right: 2px solid #1b1c1d;
+		background: $NavBar_background;
+		border-right: 2px solid $NavBar_background;
+		opacity: 1;
 	}
 
 	.navbar_fade-enter-active,
@@ -78,6 +68,6 @@
 	.navbar_fade-enter,
 	.navbar_fade-leave-to {
 		opacity: 0;
-		left: -200px;
+		left: -$NavBar_width;
 	}
 </style>

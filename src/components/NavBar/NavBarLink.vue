@@ -40,26 +40,24 @@
 </script>
 
 <style scoped lang="scss" rel="stylesheet/scss">
+	@import "@/scss/NavBar.scss";
+
 	.navbar_item {
 		display: flex;
-		align-items: inherit;
-		background: inherit;
-		color: rgba(255, 255, 255, .5);
-		font-weight: inherit;
+		color: $NavBar_secundary_color;
 		font-size: 0.85em;
-		text-decoration: inherit;
+	}
+
+	.navbar_item:hover {
+		color: $NavBar_primary_color;
+	}
+
+	.navbar_item:active {
+		background: $NavBar_border;
 	}
 
 	.navbar_item .material-icons {
 		margin-right: 12px;
-	}
-
-	.navbar_item:hover {
-		color: #ffffff;
-	}
-
-	.navbar_item:active {
-		background: rgba(255, 255, 255, 0.08);
 	}
 </style>
 

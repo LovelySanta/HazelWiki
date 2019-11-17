@@ -1,6 +1,6 @@
 <template>
 	<router-link @click.native="closeNav" class="navbar_link" v-bind="attrs">
-		<i class="material-icons">{{ iconName }}</i>{{ linkName }}
+		<i class="material-icons">{{ icon }}</i>{{ label }}
 	</router-link>
 </template>
 
@@ -9,14 +9,15 @@
 
 	export default {
 		props: {
-			iconName: {
+			label: {
 				type: String,
 				required: true
 			},
-			linkName: {
+			icon: {
 				type: String,
-				required: true
-			},
+				required: false,
+				default: ''
+			}
 		},
 		computed: {
 			// Getting the to property out of the parent, and making sure it gets down to the router-link
@@ -43,9 +44,11 @@
 	@import "@/scss/NavBar.scss";
 
 	.navbar_link {
+		align-items: middle;
 		display: flex;
 		color: $NavBar_secundary_color;
 		font-size: 0.85em;
+		font-family: inherit
 	}
 
 	.navbar_link:hover {
@@ -58,6 +61,7 @@
 
 	.navbar_link .material-icons {
 		margin-right: 12px;
+		font-size: 1.5em;
 	}
 </style>
 

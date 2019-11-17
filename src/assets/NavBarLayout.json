@@ -1,33 +1,41 @@
 [
 	{
-		"header": "Navigation bar"
+		"label": "Navigation bar"
 	},
 	{
-		"header": "Testing",
+		"label": "Basics",
+		"icon": "info",
 		"links": [
 			{
-				"name": "Home",
-				"icon": "home",
+				"label": "Home",
 				"to": "/"
 			},
 			{
-				"name": "About",
-				"icon": "info",
+				"label": "About",
 				"to": "/About"
 			}
 		]
 	},
 	{
-		"header": "More testing",
+		"label": "API",
+		"icon": "menu_book",
 		"links": [
 			{
-				"name": "Forum",
-				"icon": "question_answer",
+				"label": "Some link",
 				"to": "#"
 			},
 			{
-				"name": "API",
-				"icon": "menu_book",
+				"label": "Another link",
+				"to": "#"
+			}
+		]
+	},
+	{
+		"label": "Usefull links",
+		"links": [
+			{
+				"label": "Forum",
+				"icon": "question_answer",
 				"to": "#"
 			}
 		]

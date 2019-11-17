@@ -1,7 +1,6 @@
 <template>
 	<div class="container">
 		<h3>About page</h3>
-		<button v-on:click="toggleNavbar">Toggle menu</button>
 	</div>
 </template>
 

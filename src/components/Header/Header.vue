@@ -1,6 +1,6 @@
 <template>
 	<div class="header">
-		<HeaderButton icon="menu" />
+		<HeaderButton eventName='navbar-toggleVisibile' icon='menu' label='Menu' />
 	</div>
 </template>
 

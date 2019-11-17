@@ -25,7 +25,7 @@
 			to() {
 				return this.$attrs.to || "/"
 			},
-			// Redefine the attributes, so vue will net us set them in the child.
+			// Redefine the attributes, so vue will let us set them in the child.
 			attrs() {
 				const { ...attrs } = this.$attrs;
 				return attrs

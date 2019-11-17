@@ -1,27 +1,34 @@
 <template>
-	<a class="header_button" v-on:click="buttonAction">
-		<span class="material-icons">{{ icon }}</span>test
+	<a class="header_button" v-on:click="buttonAction(eventName)">
+		<span class="material-icons" v-if="icon !== ''">{{ icon }}</span>
+		<span class="header_button_spacer" v-if="icon !== '' && label !== ''" />
+		<span v-if="label !== ''">{{ label }}</span>
 	</a>
 </template>
 
 <script>
+	import { EventBus } from '@/main.js'
+
 	export default {
 		props: {
+			eventName: {
+				type: String,
+				required: true
+			},
 			icon: {
 				type: String,
 				required: false,
-				default: ""
+				default: ''
 			},
-			eventName: {
+			label: {
 				type: String,
 				required: false,
-				default: "Unknown"
-			}
+				default: ''
+			},
 		},
 		methods: {
-			buttonAction() {
-				console.log("testing event");
-				this.$emit(eventName);
+			buttonAction(eventName) {
+				EventBus.$emit(eventName);
 			}
 		}
 	}
@@ -36,17 +43,17 @@
 		margin: 0;
 		text-decoration: none;
 		padding: $Header_padding;
-		//vertical-align: middle;
 		height: 100%;
 		display: inline-flex;
 		align-items: center;
-		> span {
-			margin-right: 6px;
-		}
-
+		cursor: pointer;
 	}
 
 	.header_button:hover {
 		background: $Header_border;
+	}
+
+	.header_button_spacer {
+		margin-right: 6px;
 	}
 </style>

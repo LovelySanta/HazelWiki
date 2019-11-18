@@ -1,7 +1,19 @@
 <template>
 	<div class="header">
-		<HeaderButton eventName='navbar-toggleVisibile' icon='menu' label='' />
-		<HeaderLabel icon='home' label='Pagetitle' />
+		<span class="left">
+			<HeaderButton eventName='navbar-toggleVisibile' icon='menu' label='' />
+			<HeaderLabel icon='home' label='Pagetitle' />
+		</span>
+		<span class="right">
+			<!-- https://buttons.github.io/ -->
+			<a class="github-button"
+				href="https://github.com/thecherno/Hazel"
+				data-icon="octicon-star"
+				data-show-count="true"
+				aria-label="Star thecherno/Hazel on GitHub">
+				Star
+			</a>
+		</span>
 	</div>
 </template>
 
@@ -28,5 +40,18 @@
 		margin: 0;
 		background: $Header_background;
 		display: flex;
+		justify-content:space-between;
+	}
+
+	.header .left {
+		display: flex;
+		float: left;
+	}
+
+	.header .right {
+		display: flex;
+		float: right;
+		align-items: center;
+		margin-right: 20px;
 	}
 </style>

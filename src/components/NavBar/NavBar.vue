@@ -2,11 +2,11 @@
 	<transition name = "navbar_fade">
 		<div class="navbar" v-show="visible">
 			<navbar-section v-for="(section, index) in toc" :key="index"
-				:header="section.header">
+							:header="section.header">
 				<navbar-link v-for="(link, index) in section.links" :key="index"
-					:to="link.to"
-					:icon-name="link.icon"
-					:link-name="link.name"
+							 :to="link.to"
+							 :icon-name="link.icon"
+							 :link-name="link.name"
 				/>
 			</navbar-section>
 		</div>
@@ -33,10 +33,14 @@
 		created() {
 			EventBus.$on('navbar-toggleVisibile', () => {
 				this.visible = !this.visible;
+				if (this.visible) {
+					EventBus.$emit('overlay-openVisibile');
+				}
 			});
 
 			EventBus.$on('navbar-closeVisibile', () => {
 				this.visible = false;
+				EventBus.$emit('overlay-closeVisibile');
 			});
 		},
 		components: {
@@ -57,6 +61,7 @@
 		height: 100%;
 		background: $NavBar_background;
 		border-right: 2px solid $NavBar_background;
+		z-index: 10;
 		opacity: 1;
 	}
 

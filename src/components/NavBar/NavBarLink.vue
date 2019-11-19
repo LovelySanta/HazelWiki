@@ -19,13 +19,13 @@
 			},
 		},
 		computed: {
-			// Getting the to property out of the parent, and making sure it gets down to the router-link
+			// Getting the property out of the parent, and making sure it gets down to the router-link component.
 			//
-			// NOTE: In the future, the default should probably go to 404 if no route is given
+			// NOTE: In the future, the default should probably go to 404 if no route is given.
 			to() {
 				return this.$attrs.to || "/"
 			},
-			// Redefine the attributes, so vue will let us set them in the child.
+			// Redefine the attributes, because vue will not allow us set them in the child.
 			attrs() {
 				const { ...attrs } = this.$attrs;
 				return attrs
@@ -34,6 +34,7 @@
 		methods: {
 			closeNav() {
 				EventBus.$emit('navbar-closeVisibile');
+                EventBus.$emit('overlay-closeVisibile');
 			}
 		}
 	}

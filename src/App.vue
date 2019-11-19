@@ -13,7 +13,7 @@
 
 	import '../node_modules/materialize-css/dist/css/materialize.min.css';
 	import '../node_modules/materialize-css/dist/js/materialize.min.js';
-    import Overlay from "./components/Overlay/Overlay";
+	import Overlay from "./components/Overlay/Overlay";
 
 	const navBarLayout = require('../assets/NavBarLayout.json');
 
@@ -25,7 +25,7 @@
 			}
 		},
 		components: {
-            Overlay,
+			Overlay,
 			Header,
 			NavBar,
 		}

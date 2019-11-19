@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<h3>Home page</h3>
+		<zero-md src="https://raw.githubusercontent.com/TheCherno/Hazel/master/README.md"></zero-md>
 	</div>
 </template>
 

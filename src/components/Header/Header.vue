@@ -49,6 +49,7 @@
 	}
 
 	.header .right {
+		height: 100%;
 		display: flex;
 		float: right;
 		align-items: center;

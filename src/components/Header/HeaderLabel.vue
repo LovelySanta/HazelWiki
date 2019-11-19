@@ -36,6 +36,7 @@
 		border-right: 1px solid $Header_border;
 		color: $Header_color;
 		font-size: 1em;
+		font-family: $Header_font_family;
 	}
 
 	.header_label_spacer {

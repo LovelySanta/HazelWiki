@@ -2,11 +2,12 @@
 	<transition name = "navbar_fade">
 		<div class="navbar" v-show="visible">
 			<navbar-section v-for="(section, index) in toc" :key="index"
-							:header="section.header">
+				:label="section.label"
+				:icon="section.icon">
 				<navbar-link v-for="(link, index) in section.links" :key="index"
+							 :label="link.label"
+							 :icon="link.icon"
 							 :to="link.to"
-							 :icon-name="link.icon"
-							 :link-name="link.name"
 				/>
 			</navbar-section>
 		</div>

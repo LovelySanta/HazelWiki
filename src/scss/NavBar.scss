@@ -1,3 +1,5 @@
+@import "./global.scss";
+
 $NavBar_width: 200px;
 
 $NavBar_background: #1b1c1d;
@@ -5,3 +7,4 @@ $NavBar_border: rgba(255, 255, 255, 0.08);
 
 $NavBar_primary_color: #ffffff;
 $NavBar_secundary_color: rgba($NavBar_primary_color, .5);
+$NavBar_font_family: $Global_font_family;

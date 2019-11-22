@@ -1,11 +1,11 @@
 <template>
 	<div class="container">
-		<h3>About page</h3>
+		<markdown-page src="https://raw.githubusercontent.com/TheCherno/Hazel/master/README.md" />
 	</div>
 </template>
 
 <script>
-	import { EventBus } from '@/main.js';
+	import MarkdownInterpreter from '@/components/MarkdownInterpreter/MarkdownInterpreter.vue';
 
 	export default {
 		data() {
@@ -16,6 +16,9 @@
 			toggleNavbar() {
 				EventBus.$emit('navbar-toggleVisibile');
 			}
+		},
+		components: {
+			'markdown-page': MarkdownInterpreter,
 		}
 	}
 </script>

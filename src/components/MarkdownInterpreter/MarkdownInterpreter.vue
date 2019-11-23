@@ -6,6 +6,9 @@
 
 <script>
 	import axios from 'axios'
+	import MarkdownParser from './MarkdownParser.js'
+
+	const parser = new MarkdownParser();
 
 	export default {
 		props: {
@@ -18,23 +21,23 @@
 			return {
 			}
 		},
-		methods: {
-			requestSource: function(callbackFn) {
-				axios({
-					url: this.src,
-					method: 'GET'
-				}).then((response) => {
-					callbackFn(response.data);
-				}).catch((error) => {
-					console.log(error);
-				});
-			},
-			compileSource: function(src) {
-				console.log(src);
-			},
-		},
 		mounted() {
-			this.requestSource(this.compileSource);
+			axios({
+				url: this.src,
+				method: 'GET'
+			}).then((response) => {
+				this.compileSource(response.data);
+			}).catch((error) => {
+				console.log(error);
+			});
+		},
+		methods: {
+			compileSource: (src) => {
+				// https://blog.beezwax.net/2017/07/07/writing-a-markdown-compiler/
+				//console.log(src);
+				parser.setSource(src);
+				parser.parseSource();
+			}
 		}
 	}
 </script>

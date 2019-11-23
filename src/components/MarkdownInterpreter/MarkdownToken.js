@@ -1,11 +1,11 @@
 export default class MarkdownToken {
-	constructor(type, value, length) {
-		this.type  = type;
-		this.value = value;
-		this.length = length;
+	constructor(token, content, length) {
+		this.token   = token;
+		this.content = content;
+		this.length  = length;
 	}
 
-	isNull() { return this.type == MarkdownToken.nullToken().type }
+	isNull() { return this.token == MarkdownToken.nullToken().token }
 
 	static endOfFileToken() { return new MarkdownToken('EOF', '', 0); }
 	static nullToken() { return new MarkdownToken('NULL', '', 0); }

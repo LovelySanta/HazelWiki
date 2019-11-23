@@ -5,7 +5,9 @@ export default class MarkdownTokenScanner {
 	 * Instead, it will detect everything that specific scanners cannot
 	 * detect themselves.
 	 */
-	constructor() {}
+	constructor(token) {
+		this.token = token;
+	}
 
 	scan(source) {
 		var sourceLength = source.length;
@@ -24,13 +26,15 @@ export default class MarkdownTokenScanner {
 				}
 			}
 		}
-		return new MarkdownToken('TXT', source.substring(0, textIndex).trim(), textIndex);
+		return new MarkdownToken(this.token, source.substring(0, textIndex).trim(), textIndex);
 	}
 
 	static registeredTokens = [];
-	static getRegisteredTokens() { return this.registeredTokens; }
+	static getRegisteredTokens() {return this.registeredTokens; }
 	static registerToken(token) {
-		if (!this.registeredTokens.includes(token)) {
+		if (Array.isArray(token)) {
+			MarkdownTokenScanner.registerToken(token[0]);
+		} else if (!this.registeredTokens.includes(token)) {
 			this.registeredTokens = this.registeredTokens.concat(token);
 		}
 	}

@@ -1,6 +1,7 @@
 import MarkdownToken from './MarkdownToken'
 
 import MarkdownTokenScanner        from './MarkdownTokenScanner'        // Base scanner
+import MarkdownTokenScannerCode    from './MarkdownTokenScannerCode'    // Code scanner
 import MarkdownTokenScannerHeader  from './MarkdownTokenScannerHeader'  // Header scanner
 import MarkdownTokenScannerImage   from './MarkdownTokenScannerImage'   // Image scanner
 import MarkdownTokenScannerLink    from './MarkdownTokenScannerLink'    // Link scanner
@@ -9,6 +10,7 @@ import MarkdownTokenScannerNewline from './MarkdownTokenScannerNewline' // Newli
 export default class MarkdownTokenizer {
 	constructor() {
 		this.scanners = [ // Scanner with highest priority must be on top
+			new MarkdownTokenScannerCode(),
 			new MarkdownTokenScannerHeader(),
 			new MarkdownTokenScannerImage(),
 			new MarkdownTokenScannerLink(),
@@ -31,14 +33,14 @@ export default class MarkdownTokenizer {
 			for (var scannerIndex = 0; scannerIndex < this.scannersAmount; scannerIndex++)
 			{
 				var token = this.scanners[scannerIndex].scan(source);
-				if (!token.isNull()) {
+				if (token.isValid()) {
 					return [token].concat(this._createTokenArray(source.substr(token.length)));
 				}
 			}
 			return [MarkdownToken.errorToken()];
 		}
 	}
-s
+
 	_cleanTokenArray() {
 		var tokenIndex = this.tokens.length;
 		while(--tokenIndex >= 0) {

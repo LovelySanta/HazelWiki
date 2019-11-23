@@ -24,12 +24,20 @@ export default class MarkdownTokenScannerImage extends MarkdownTokenScanner {
 				new MarkdownTokenScanner()
 			];
 			var scannersAmount = scanners.length;
-			for (var scannerIndex = 0; scannerIndex < scannersAmount; scannerIndex++)
-			{
-				var token = scanners[scannerIndex].scan(source.substring(tokenLength, source.length));
-				if (!token.isNull()) {
-					tokenContent[0][tokenContent0Amount++] = token;
-					tokenLength += token.length;
+			while(source.substring(tokenLength, tokenLength + this.token[1].length) != this.token[1]) {
+				var prevTokenLength = tokenLength;
+				for (var scannerIndex = 0; scannerIndex < scannersAmount; scannerIndex++)
+				{
+					var token = scanners[scannerIndex].scan(source.substring(tokenLength, source.length));
+					if (!token.isNull()) {
+						tokenContent[0][tokenContent0Amount++] = token;
+						tokenLength += token.length;
+					}
+				}
+				if (tokenLength == prevTokenLength) {
+					console.error("Could not scan this!");
+					console.error(source.substring(tokenLength, source.length));
+					return MarkdownToken.errorToken();
 				}
 			}
 

@@ -11,3 +11,7 @@
 ###### This is a header 6
 
 This is a regular block of text
+
+Here is an image for you: ![Image caption](http://www.image.com).
+And here is a link for you: [Link caption](http://www.link.com).
+And here you have a link with an image! [![Image caption](http://www.image.com)](http://www.link.com).

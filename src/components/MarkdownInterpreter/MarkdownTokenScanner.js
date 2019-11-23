@@ -15,7 +15,7 @@ export default class MarkdownTokenScanner {
 		var tokens = MarkdownTokenScanner.getRegisteredTokens();
 		var tokensLength = tokens.length;
 		
-		var textIndex = 0;
+		var textIndex = -1;
 		var foundToken = false;
 		while((!foundToken) && sourceLength > textIndex++) {
 			for(var tokenIndex = 0; tokenIndex < tokensLength; tokenIndex++) {
@@ -26,7 +26,10 @@ export default class MarkdownTokenScanner {
 				}
 			}
 		}
-		return new MarkdownToken(this.token, source.substring(0, textIndex), textIndex);
+		if (textIndex > 0) {
+			return new MarkdownToken(this.token, source.substring(0, textIndex), textIndex);
+		}
+		return MarkdownToken.nullToken();
 	}
 
 	static registeredTokens = [];

@@ -12,7 +12,7 @@ export default class MarkdownTokenScannerNewline extends MarkdownTokenScanner {
 	scan(source) {
 		if (source.charAt(0) == this.token) {
 			var headerIndex = 0
-			while(source.charAt(++headerIndex) == this.token); // group all the newlines together
+			while(source.charAt(headerIndex++) == this.token); // group all the newlines together
 			return new MarkdownToken(this.token, headerIndex, headerIndex);
 		} else {
 			return MarkdownToken.nullToken();

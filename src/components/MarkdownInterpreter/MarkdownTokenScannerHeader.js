@@ -1,7 +1,6 @@
 import MarkdownToken from './MarkdownToken'
 
-import MarkdownTokenScanner        from './MarkdownTokenScanner'
-import MarkdownTokenScannerNewline from './MarkdownTokenScannerNewline'
+import MarkdownTokenScanner from './MarkdownTokenScanner'
 
 export default class MarkdownTokenScannerHeader extends MarkdownTokenScanner {
 	constructor() {
@@ -10,13 +9,6 @@ export default class MarkdownTokenScannerHeader extends MarkdownTokenScanner {
 		// Token for this scanner
 		this.token = '#';
 		MarkdownTokenScanner.registerToken(this.token);
-
-		// Sub scanners
-		this.scanners = [
-			new MarkdownTokenScannerNewline('\n'),
-			new MarkdownTokenScanner()
-		];
-		this.scannersAmount = this.scanners.length;
 	}
 
 	scan(source) {
@@ -30,9 +22,13 @@ export default class MarkdownTokenScannerHeader extends MarkdownTokenScanner {
 			tokenLength    += headerIndex;
 
 			// Now scan the content of the header
-			for (var scannerIndex = 0; scannerIndex < this.scannersAmount; scannerIndex++)
+			var scanners = [
+				new MarkdownTokenScanner()
+			];
+			var scannersAmount = scanners.length;
+			for (var scannerIndex = 0; scannerIndex < scannersAmount; scannerIndex++)
 			{
-				var token = this.scanners[scannerIndex].scan(source.substr(headerIndex));
+				var token = scanners[scannerIndex].scan(source.substr(headerIndex));
 				if (!token.isNull()) {
 					tokenContent[1] = token;
 					tokenLength    += token.length;

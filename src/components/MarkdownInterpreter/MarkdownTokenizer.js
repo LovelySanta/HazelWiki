@@ -1,14 +1,15 @@
 import MarkdownToken from './MarkdownToken'
 
-import MarkdownTokenScanner       from './MarkdownTokenScanner'       // Base scanner
-import MarkdownTokenScannerHeader from './MarkdownTokenScannerHeader' // Header scanner
-import MarkdownTokenScannerText   from './MarkdownTokenScannerText'   // Text scanner
+import MarkdownTokenScanner        from './MarkdownTokenScanner'        // Base scanner
+import MarkdownTokenScannerHeader  from './MarkdownTokenScannerHeader'  // Header scanner
+import MarkdownTokenScannerNewline from './MarkdownTokenScannerNewline' // Newline scanner
 
 export default class MarkdownTokenizer {
 	constructor() {
 		this.scanners = [
+			new MarkdownTokenScannerNewline(),
 			new MarkdownTokenScannerHeader(),
-			new MarkdownTokenScannerText()
+			new MarkdownTokenScanner() // everything that is not detected by other scanners will be detected as text.
 		];
 		this.scannersAmount = this.scanners.length;
 	}

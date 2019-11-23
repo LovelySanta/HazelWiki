@@ -1,11 +1,10 @@
 import MarkdownTokenScanner from './MarkdownTokenScanner'
-
 import MarkdownToken from './MarkdownToken'
 
 export default class MarkdownTokenScannerHeader extends MarkdownTokenScanner {
 	constructor() {
 		super();
-		
+
 		this.token = MarkdownTokenScannerHeader.getToken();
 		MarkdownTokenScanner.registerToken(this.token);
 	}

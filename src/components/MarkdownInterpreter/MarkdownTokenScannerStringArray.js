@@ -1,7 +1,7 @@
 import MarkdownTokenScanner from './MarkdownTokenScanner'
 import MarkdownToken from './MarkdownToken'
 
-export default class MarkdownTokenScannerImage extends MarkdownTokenScanner {
+export default class MarkdownTokenScannerStringArray extends MarkdownTokenScanner {
 	constructor(tokenStringArray) {
 		super(null);
 		MarkdownTokenScanner.registerToken(tokenStringArray);
@@ -15,7 +15,7 @@ export default class MarkdownTokenScannerImage extends MarkdownTokenScanner {
 			// Found the first token, now find the indexes of the others
 			var tokenContent = []
 			var tokenContentStartIndex = tokenLength;
-			var sourceIndex = tokenLength;
+			var tokenContentEndIndex   = tokenContentStartIndex;
 			for(var tokenIndex = 1; tokenIndex < this.token.length; tokenIndex++)
 			{
 				// next token to search for
@@ -23,12 +23,12 @@ export default class MarkdownTokenScannerImage extends MarkdownTokenScanner {
 				tokenLength = token.length;
 
 				// search for the token
-				while(source.substring(++sourceIndex, sourceIndex + token.length) != token);
+				while(source.substring(++tokenContentEndIndex, tokenContentEndIndex + token.length) != token);
 
 				// concatenate the content
-				tokenContent = tokenContent.concat([source.substring(tokenContentStartIndex, sourceIndex)]);
-				tokenContentStartIndex = sourceIndex + tokenLength;
-				sourceIndex += tokenLength-1;
+				tokenContent = tokenContent.concat([source.substring(tokenContentStartIndex, tokenContentEndIndex)]);
+				tokenContentStartIndex = tokenContentEndIndex + tokenLength;
+				tokenContentEndIndex   = tokenContentStartIndex;
 			}
 
 			// Finaly return the token
@@ -37,6 +37,4 @@ export default class MarkdownTokenScannerImage extends MarkdownTokenScanner {
 			return MarkdownToken.nullToken();
 		}
 	}
-
-	static getToken() { return ['![','](',')'] }
 };

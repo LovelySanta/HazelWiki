@@ -5,8 +5,8 @@ export default class MarkdownTokenScanner {
 	 * Instead, it will detect everything that specific scanners cannot
 	 * detect themselves.
 	 */
-	constructor(token) {
-		this.token = token;
+	constructor() {
+		this.token = 'TXT';
 	}
 
 	scan(source) {
@@ -26,7 +26,7 @@ export default class MarkdownTokenScanner {
 				}
 			}
 		}
-		return new MarkdownToken(this.token, source.substring(0, textIndex).trim(), textIndex);
+		return new MarkdownToken(this.token, source.substring(0, textIndex), textIndex);
 	}
 
 	static registeredTokens = [];

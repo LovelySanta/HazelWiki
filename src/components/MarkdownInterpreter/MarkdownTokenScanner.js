@@ -5,55 +5,34 @@ export default class MarkdownTokenScanner {
 	 * Instead, it will detect everything that specific scanners cannot
 	 * detect themselves.
 	 */
-	constructor() {
-		// Token for this scanner
-		this.token = this.getToken();
+	constructor()
+	{
+		this.scanners = []; // registered scanners
+		this.scannersAmount = 0;
 	}
 
-	getToken() { return 'TXT'; }
-	getRegisterToken() { return null; }
+	static getToken() { return 'TXT'; }
 
-	scan(source) {
-		var sourceLength = source.length;
-		
-		var tokens = this.getRegisteredTokens();
-		var tokensLength = tokens.length;
-		
-		var textIndex = -1;
-		var foundToken = false;
-		while((!foundToken) && sourceLength > textIndex++) {
-			for(var tokenIndex = 0; tokenIndex < tokensLength; tokenIndex++) {
-				var token = tokens[tokenIndex];
-				if (source.substring(textIndex, textIndex + token.length) === token) {
-					foundToken = true;
-					break;
-				}
+	addScanner(scanner)
+	{
+		// The first scanner added will have the highers priority
+		this.scanners[this.scannersAmount++] = scanner;
+	}
+
+	scan(source)
+	{
+		// Check if any registered scanners recognize this as a token
+		for(var scannerIndex = 0; scannerIndex < this.scannersAmount; scannerIndex++)
+		{
+			var scanToken = this.scanners[scannerIndex].scan(source);
+			if (scanToken.isValid())
+			{
+				return scanToken;
 			}
 		}
-		if (textIndex > 0) {
-			return new MarkdownToken(this.token, source.substring(0, textIndex), source.substring(0, textIndex).length);
-		}
-		return MarkdownToken.nullToken();
+		
+		// It is not registered, so this scanner recognizes it as plain text
+		return MarkdownToken(MarkdownTokenScanner.getToken(), source.charAt(0), 1);
 	}
 
-	registeredTokens = [];
-	getRegisteredTokens() {return this.registeredTokens; }
-	registerToken(token) {
-		if (Array.isArray(token)) {
-			token.forEach((t) => {
-				this.registerToken(t);
-			});
-		} else if (!this.registeredTokens.includes(token)) {
-			this.registeredTokens = this.registeredTokens.concat(token);
-		}
-	}
-	registerScanner(scanner) {
-		if (Array.isArray(scanner)) {
-			scanner.forEach((s) => {
-				this.registerScanner(s);
-			});
-		} else {
-			this.registerToken(scanner.getRegisterToken())
-		}
-	}
 };

@@ -1,8 +1,9 @@
 import MarkdownToken from './MarkdownToken'
 
-import MarkdownTokenScanner from './MarkdownTokenScanner'
+import MarkdownTokenScanner          from './MarkdownTokenScanner'
+import MarkdownTokenScannerNewline   from './MarkdownTokenScannerNewline'
 
-export default class MarkdownTokenScannerImage extends MarkdownTokenScanner {
+export default class MarkdownTokenScannerCodeBlock extends MarkdownTokenScanner {
 	constructor() {
 		super(null);
 
@@ -10,30 +11,33 @@ export default class MarkdownTokenScannerImage extends MarkdownTokenScanner {
 		this.token = this.getToken();
 	}
 
-	getToken() { return ['![','](',')']; }
-	getRegisterToken() { return this.getToken().slice(0, 2); }
+	getToken() { return ["```","```"]; }
+	getRegisterToken() { return this.getToken()[0]; }
 
 	scan(source) {
 		if (source.substring(0, this.token[0].length) == this.token[0]) {
-			var tokenContent = []; // Content of this image token
-			var tokenLength  = this.token[0].length;  // Length of this token
+			var tokenContent = [];
+			var tokenContentAmount = 0;
+			var tokenLength = this.token[0].length;  // Length of this token
 
-			// Scan the content of the image caption
-			tokenContent[0] = [];
-			var tokenContent0Amount = 0;
+			// Now scan the content of the code block
 			var scanners = [
+				new MarkdownTokenScannerNewline(),
 				new MarkdownTokenScanner()
 			];
 			var scannersAmount = scanners.length;
-			scanners[scannersAmount-1].registerScanner(this);
+			scanners[scannersAmount-1].registerScanner(scanners.slice(0, scannersAmount-1));
+			scanners[scannersAmount-1].registerScanner(new MarkdownTokenScannerCodeBlock());
+
 			while(tokenLength < source.length && source.substring(tokenLength, tokenLength + this.token[1].length) != this.token[1]) {
 				var prevTokenLength = tokenLength;
 				for (var scannerIndex = 0; scannerIndex < scannersAmount; scannerIndex++)
 				{
 					var token = scanners[scannerIndex].scan(source.substring(tokenLength, source.length));
 					if (!token.isNull()) {
-						tokenContent[0][tokenContent0Amount++] = token;
+						tokenContent[tokenContentAmount++] = token;
 						tokenLength += token.length;
+						break;
 					}
 				}
 				if (tokenLength == prevTokenLength) {
@@ -42,13 +46,9 @@ export default class MarkdownTokenScannerImage extends MarkdownTokenScanner {
 					return MarkdownToken.errorToken();
 				}
 			}
+			tokenLength += this.token[1].length;
 
-			// Content of the image link
-			tokenContent[1] = source.substring(source.indexOf(this.token[1]) + this.token[1].length, source.indexOf(this.token[2]));
-			tokenLength += tokenContent[1].length + this.token[1].length + this.token[2].length;
-
-			// Create a token for this image
-			return new MarkdownToken(this.token[0], tokenContent, tokenLength);
+			return new MarkdownToken(this.token.join(''), tokenContent, tokenLength);
 		} else {
 			return MarkdownToken.nullToken();
 		}

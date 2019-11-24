@@ -1,18 +1,19 @@
 import MarkdownToken from './MarkdownToken'
 
-import MarkdownTokenScanner        from './MarkdownTokenScanner'
-import MarkdownTokenScannerCode    from './MarkdownTokenScannerCode'
-import MarkdownTokenScannerImage   from './MarkdownTokenScannerImage'
+import MarkdownTokenScanner      from './MarkdownTokenScanner'
+import MarkdownTokenScannerCode  from './MarkdownTokenScannerCode'
+import MarkdownTokenScannerImage from './MarkdownTokenScannerImage'
 
 export default class MarkdownTokenScannerLink extends MarkdownTokenScanner {
 	constructor() {
 		super(null);
 
 		// Token for this scanner
-		this.token = ['[','](',')'];
-		MarkdownTokenScanner.registerToken(this.token[0]);
-		MarkdownTokenScanner.registerToken(this.token[1]);
+		this.token = this.getToken();
 	}
+
+	getToken() { return ['[','](',')']; }
+	getRegisterToken() { return this.getToken().slice(0, 2); }
 
 	scan(source) {
 		if (source.substring(0, this.token[0].length) == this.token[0]) {
@@ -28,7 +29,9 @@ export default class MarkdownTokenScannerLink extends MarkdownTokenScanner {
 				new MarkdownTokenScanner()
 			];
 			var scannersAmount = scanners.length;
-			while(source.substring(tokenLength, tokenLength + this.token[1].length) != this.token[1]) {
+			scanners[scannersAmount-1].registerScanner(scanners.slice(0, scannersAmount-1));
+
+			while(tokenLength < source.length && source.substring(tokenLength, tokenLength + this.token[1].length) != this.token[1]) {
 				var prevTokenLength = tokenLength;
 				for (var scannerIndex = 0; scannerIndex < scannersAmount; scannerIndex++)
 				{

@@ -9,7 +9,7 @@ export default class MarkdownToken {
 	isError() { return this.token == MarkdownToken.errorToken().token }
 	isValid() { return !(this.isNull() || this.isError()); }
 
-	static endOfFileToken() { return new MarkdownToken('EOF', '', 0); }
-	static nullToken() { return new MarkdownToken('NULL', '', 0); }
-	static errorToken() { return new MarkdownToken('ERROR', '', -1); }
+	static endOfFileToken() { return new MarkdownToken('EOF', null, 0); }
+	static nullToken() { return new MarkdownToken('NULL', null, 0); }
+	static errorToken() { return new MarkdownToken('ERROR', null, 0); }
 };

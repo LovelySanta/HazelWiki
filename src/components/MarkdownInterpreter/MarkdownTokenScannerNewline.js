@@ -5,9 +5,12 @@ import MarkdownTokenScanner from './MarkdownTokenScanner'
 export default class MarkdownTokenScannerNewline extends MarkdownTokenScanner {
 	constructor() {
 		super(null);
-		this.token = '\n';
-		MarkdownTokenScanner.registerToken(this.token);
+		
+		this.token = this.getToken();
 	}
+
+	getToken() { return '\n'; }
+	getRegisterToken() { return this.getToken(); }
 
 	scan(source) {
 		if (source.charAt(0) == this.token) {

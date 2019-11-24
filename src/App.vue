@@ -15,7 +15,7 @@
 	import '../node_modules/materialize-css/dist/js/materialize.min.js';
 	import Overlay from "./components/Overlay/Overlay";
 
-	const navBarLayout = require('../assets/NavBarLayout.json');
+	const navBarLayout = require('./assets/NavBarLayout.json');
 
 	export default {
 		name: 'App',

@@ -26,16 +26,16 @@
 				url: this.src,
 				method: 'GET'
 			}).then((response) => {
-				this.compileSource(response.data);
+				parser.setSource(response.data);
+				this.compileSource();
 			}).catch((error) => {
 				console.log(error);
 			});
 		},
 		methods: {
-			compileSource: (src) => {
+			compileSource: () => {
 				// https://blog.beezwax.net/2017/07/07/writing-a-markdown-compiler/
-				//console.log(src);
-				parser.setSource(src);
+				//parser.log();
 				parser.parseSource();
 			}
 		}

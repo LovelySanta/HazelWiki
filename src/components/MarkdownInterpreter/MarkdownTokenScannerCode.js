@@ -1,15 +1,17 @@
 import MarkdownToken from './MarkdownToken'
 
-import MarkdownTokenScanner		from './MarkdownTokenScanner'
+import MarkdownTokenScanner from './MarkdownTokenScanner'
 
 export default class MarkdownTokenScannerCode extends MarkdownTokenScanner {
 	constructor() {
 		super(null);
 
 		// Token for this scanner
-		this.token = ["`","`"];
-		MarkdownTokenScanner.registerToken(this.token[0]);
+		this.token = this.getToken();
 	}
+
+	getToken() { return ["`","`"]; }
+	getRegisterToken() { return this.getToken()[0]; }
 
 	scan(source) {
 		if (source.substring(0, this.token[0].length) == this.token[0]) {

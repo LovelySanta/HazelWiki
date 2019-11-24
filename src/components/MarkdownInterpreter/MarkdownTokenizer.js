@@ -1,23 +1,29 @@
 import MarkdownToken from './MarkdownToken'
 
-import MarkdownTokenScanner        from './MarkdownTokenScanner'        // Base scanner
-import MarkdownTokenScannerCode    from './MarkdownTokenScannerCode'    // Code scanner
-import MarkdownTokenScannerHeader  from './MarkdownTokenScannerHeader'  // Header scanner
-import MarkdownTokenScannerImage   from './MarkdownTokenScannerImage'   // Image scanner
-import MarkdownTokenScannerLink    from './MarkdownTokenScannerLink'    // Link scanner
-import MarkdownTokenScannerNewline from './MarkdownTokenScannerNewline' // Newline scanner
+import MarkdownTokenScanner          from './MarkdownTokenScanner'          // Base scanner
+import MarkdownTokenScannerCode      from './MarkdownTokenScannerCode'      // Code scanner
+import MarkdownTokenScannerCodeBlock from './MarkdownTokenScannerCodeBlock' // Code block scanner
+import MarkdownTokenScannerHeader    from './MarkdownTokenScannerHeader'    // Header scanner
+import MarkdownTokenScannerLink      from './MarkdownTokenScannerLink'      // Link scanner
+import MarkdownTokenScannerImage     from './MarkdownTokenScannerImage'     // Image scanner
+import MarkdownTokenScannerNewline   from './MarkdownTokenScannerNewline'   // Newline scanner
 
 export default class MarkdownTokenizer {
 	constructor() {
 		this.scanners = [ // Scanner with highest priority must be on top
+			new MarkdownTokenScannerCodeBlock(),
 			new MarkdownTokenScannerCode(),
+
 			new MarkdownTokenScannerHeader(),
+
 			new MarkdownTokenScannerImage(),
 			new MarkdownTokenScannerLink(),
+
 			new MarkdownTokenScannerNewline(),
 			new MarkdownTokenScanner()
 		];
 		this.scannersAmount = this.scanners.length;
+		this.scanners[this.scannersAmount-1].registerScanner(this.scanners.slice(0, this.scannersAmount-1));
 	}
 
 	tokenize(src) {
@@ -42,6 +48,7 @@ export default class MarkdownTokenizer {
 	}
 
 	_cleanTokenArray() {
+		var alteredArray = false;
 		var tokenIndex = this.tokens.length;
 		while(--tokenIndex >= 0) {
 			var token = this.tokens[tokenIndex];
@@ -54,7 +61,14 @@ export default class MarkdownTokenizer {
 				removeToken = true;
 			}
 
-			if (removeToken) { this.tokens.splice(tokenIndex++, 1); }
+			if (removeToken) {
+				this.tokens.splice(tokenIndex++, 1);
+				alteredArray = true;
+			}
+		}
+
+		if (alteredArray) {
+			return this._cleanTokenArray();
 		}
 	}
 };

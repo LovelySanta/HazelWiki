@@ -18,3 +18,13 @@ And here you have a link with an image! [![Image caption](http://www.image.com)]
 
 This is no code, but `This is!`
 [yess `code linking` ..](http://www.link.com)
+
+```cpp
+int main()
+{
+	// This is just a test
+	print("[Something](no.link)");
+	print("![Something else](no.image)");
+}
+```
+test

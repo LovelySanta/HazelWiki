@@ -1,15 +1,18 @@
 import MarkdownToken from './MarkdownToken'
 
 import MarkdownTokenScanner from './MarkdownTokenScanner'
+import MarkdownTokenScannerNewline from './MarkdownTokenScannerNewline';
 
 export default class MarkdownTokenScannerHeader extends MarkdownTokenScanner {
 	constructor() {
 		super(null);
 
 		// Token for this scanner
-		this.token = '#';
-		MarkdownTokenScanner.registerToken(this.token);
+		this.token = this.getToken();
 	}
+
+	getToken() { return '#'; }
+	getRegisterToken() { return this.getToken(); }
 
 	scan(source) {
 		if (source.charAt(0) == this.token) {
@@ -26,12 +29,15 @@ export default class MarkdownTokenScannerHeader extends MarkdownTokenScanner {
 				new MarkdownTokenScanner()
 			];
 			var scannersAmount = scanners.length;
+			scanners[scannersAmount-1].registerScanner(new MarkdownTokenScannerNewline());
+
 			for (var scannerIndex = 0; scannerIndex < scannersAmount; scannerIndex++)
 			{
 				var token = scanners[scannerIndex].scan(source.substr(headerIndex));
 				if (!token.isNull()) {
 					tokenContent[1] = token;
 					tokenLength    += token.length;
+					break;
 				}
 			}
 

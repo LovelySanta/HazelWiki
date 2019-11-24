@@ -37,6 +37,7 @@
 				// https://blog.beezwax.net/2017/07/07/writing-a-markdown-compiler/
 				//parser.log();
 				parser.parseSource();
+				parser.log();
 			}
 		}
 	}

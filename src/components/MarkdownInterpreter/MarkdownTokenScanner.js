@@ -1,6 +1,7 @@
 import MarkdownToken from './MarkdownToken'
 
-export default class MarkdownTokenScanner {
+export default class MarkdownTokenScanner
+{
 	/* Abstract base class, this class cannot scan for specific tokens,
 	 * Instead, it will detect everything that specific scanners cannot
 	 * detect themselves.
@@ -19,12 +20,15 @@ export default class MarkdownTokenScanner {
 		this.scanners[this.scannersAmount++] = scanner;
 	}
 
-	scan(source)
+	scan(src)
 	{
+		// Check if the source is empty
+		if (src.length == 0) { return MarkdownToken.endOfFileToken(); }
+
 		// Check if any registered scanners recognize this as a token
 		for(var scannerIndex = 0; scannerIndex < this.scannersAmount; scannerIndex++)
 		{
-			var scanToken = this.scanners[scannerIndex].scan(source);
+			var scanToken = this.scanners[scannerIndex].scan(src);
 			if (scanToken.isValid())
 			{
 				return scanToken;
@@ -32,7 +36,6 @@ export default class MarkdownTokenScanner {
 		}
 		
 		// It is not registered, so this scanner recognizes it as plain text
-		return MarkdownToken(MarkdownTokenScanner.getToken(), source.charAt(0), 1);
+		return new MarkdownToken(MarkdownTokenScanner.getToken(), src.charAt(0), 1);
 	}
-
 };

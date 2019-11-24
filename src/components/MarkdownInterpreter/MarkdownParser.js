@@ -1,18 +1,25 @@
 import MarkdownTokenizer from './MarkdownTokenizer'
 
-export default class MarkdownParser {
-	constructor() {}
+export default class MarkdownParser
+{
+	constructor()
+	{
+		this.tokenizer = new MarkdownTokenizer();
+	}
 
-	setSource(src) {
+	setSource(src)
+	{
 		this.src = src;
 	}
 
-	parseSource() {
-		var tokenizer = new MarkdownTokenizer()
-		tokenizer.tokenize(this.src);
+	parseSource()
+	{
+		this.src = this.tokenizer.tokenize(this.src);
+		this.src = this.tokenizer.mergeTokens(this.src);
 	}
 
-	log() {
+	log()
+	{
 		console.log(this.src);
 	}
 };

@@ -6,8 +6,8 @@
 
 <script>
 	import axios from 'axios'
-	import MarkdownParser from './MarkdownParser'
 	import MarkdownTokenizer from './MarkdownTokenizer'
+	import MarkdownParser from './MarkdownParser'
 
 	const tokenizer = new MarkdownTokenizer();
 	const parser = new MarkdownParser();
@@ -28,15 +28,17 @@
 				url: this.src,
 				method: 'GET'
 			}).then((response) => {
-				this.compileSource(response.data);
+				this.parseSource(this.tokenize(response.data));
 			}).catch((error) => {
 				console.log(error);
 			});
 		},
 		methods: {
-			compileSource: (src) => {
-				// Create tokens from the src
-				parser.setTokens(tokenizer.tokenize(src));
+			tokenize: (src) => {
+				return tokenizer.tokenize(src);
+			},
+			parseSource: (src) => {
+				parser.setTokens(src);
 				//parser.logTokens();
 
 				// Parse the tokens to create a recursive tree

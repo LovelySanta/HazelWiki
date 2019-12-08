@@ -97,8 +97,8 @@ export default class MarkdownParser
 	parseTokens()
 	{
 		// Strips the tokens into main chunks to create into elements
-		var tokenIndex = 0;
-		while(tokenIndex < this.tokenArray.length-1)
+		var tokenIndex = -1;
+		while(++tokenIndex < this.tokenArray.length-1)
 		{
 			var token = this.tokenArray[tokenIndex];
 			if(token.token == MarkdownTokenScannerHeader.getToken()) // Header
@@ -111,7 +111,11 @@ export default class MarkdownParser
 				this.elementArray = this.elementArray.concat(headerElement);
 				tokenIndex = newlineIndex;
 			}
-			else if(token.token == MarkdownTokenScanner.getToken() || token.token == MarkdownTokenScannerItalic.getToken() || token.token == MarkdownTokenScannerBold.getToken()) // Paragraph
+			else if(token.token == MarkdownTokenScanner.getToken() || // TODO: convert this to just an else statement
+					token.token == MarkdownTokenScannerItalic.getToken() ||
+					token.token == MarkdownTokenScannerBold.getToken() ||
+					token.token == MarkdownTokenScannerImage.getToken().join('')||
+					token.token == MarkdownTokenScannerLink.getToken().join('')) // Paragraph
 			{
 				console.log("paragraph");
 				var newlineIndex = tokenIndex
@@ -121,10 +125,6 @@ export default class MarkdownParser
 				this.elementArray = this.elementArray.concat(paragraphElement);
 				tokenIndex = newlineIndex+1;
 			}
-			else
-			{
-				tokenIndex++; // prevent crashing temporary
-			}
 		}
 	}
 
@@ -132,6 +132,7 @@ export default class MarkdownParser
 	{
 		console.log(tokenArray)
 		var token = tokenArray[0];
+
 		if(token.token == MarkdownTokenScanner.getToken())
 		{
 			var element = MarkdownParserElement.createTextElement(token.content);
@@ -164,6 +165,36 @@ export default class MarkdownParser
 			var italicElement = MarkdownParserElement.createItalicElement(this.createContentElement(tokenArray.slice(1, tokenIndex)))
 			if (tokenIndex == tokenArray.length-1) { return italicElement; }
 			return [italicElement].concat(this.createContentElement(tokenArray.slice(tokenIndex+1)));
+		}
+
+		if(token.token == MarkdownTokenScannerImage.getToken().join(''))
+		{
+			var linkTokenIndex = 0;
+			while(++linkTokenIndex < tokenArray.length && tokenArray[linkTokenIndex].token != MarkdownTokenScannerImage.getToken().join(''));
+			var linkElement = this.createContentElement(tokenArray.slice(1, linkTokenIndex))
+
+			var captionTokenIndex = linkTokenIndex;
+			while(++captionTokenIndex < tokenArray.length && tokenArray[captionTokenIndex].token != MarkdownTokenScannerImage.getToken().join(''));
+			var captionElement = this.createContentElement(tokenArray.slice(linkTokenIndex+1, captionTokenIndex))
+
+			var imageElement = MarkdownParserElement.createImageElement(linkElement, captionElement)
+			if (captionTokenIndex == tokenArray.length-1) { return imageElement; }
+			return [imageElement].concat(this.createContentElement(tokenArray.slice(captionTokenIndex+1)));
+		}
+
+		if(token.token == MarkdownTokenScannerLink.getToken().join(''))
+		{
+			var linkTokenIndex = 0;
+			while(++linkTokenIndex < tokenArray.length && tokenArray[linkTokenIndex].token != MarkdownTokenScannerLink.getToken().join(''));
+			var linkElement = this.createContentElement(tokenArray.slice(1, linkTokenIndex))
+
+			var captionTokenIndex = linkTokenIndex;
+			while(++captionTokenIndex < tokenArray.length && tokenArray[captionTokenIndex].token != MarkdownTokenScannerLink.getToken().join(''));
+			var captionElement = this.createContentElement(tokenArray.slice(linkTokenIndex+1, captionTokenIndex))
+
+			var linkingElement = MarkdownParserElement.createImageElement(linkElement, captionElement)
+			if (captionTokenIndex == tokenArray.length-1) { return linkingElement; }
+			return [linkingElement].concat(this.createContentElement(tokenArray.slice(captionTokenIndex+1)));
 		}
 
 	}

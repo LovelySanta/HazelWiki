@@ -15,6 +15,11 @@ export default class MarkdownParserElement
 		this.content = content
 	}
 
+	static createParagraphElement(contentElements)
+	{
+		return new MarkdownParserElement('p', [contentElements]);
+	}
+
 	static createTextElement(content)
 	{
 		return new MarkdownParserElement(MarkdownTokenScanner.getToken(), [content]);
@@ -40,8 +45,14 @@ export default class MarkdownParserElement
 		return new MarkdownParserElement(MarkdownTokenScannerHeader.getToken(), [level].concat(contentElement));
 	}
 
-	static createParagraphElement(contentElements)
+	static createImageElement(linkElement, captionElement)
 	{
-		return new MarkdownParserElement('p', [contentElements]);
+		return new MarkdownParserElement(MarkdownTokenScannerImage.getToken().join(''), [linkElement].concat(captionElement));
 	}
+
+	static createLinkElement(linkElement, captionElement)
+	{
+		return new MarkdownParserElement(MarkdownTokenScannerLink.getToken().join(''), [linkElement].concat(captionElement));
+	}
+
 };

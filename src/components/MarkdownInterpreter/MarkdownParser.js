@@ -103,18 +103,22 @@ export default class MarkdownParser
 			var token = this.tokenArray[tokenIndex];
 			if(token.token == MarkdownTokenScannerHeader.getToken()) // Header
 			{
-				console.log("header")
+				console.log("header");
 				var newlineIndex = tokenIndex;
 				while(++newlineIndex < this.tokenArray.length-1 && this.tokenArray[newlineIndex].token != MarkdownTokenScannerNewline.getToken());
-				this.elementArray = this.elementArray.concat(this.createContentElement(this.tokenArray.slice(tokenIndex, newlineIndex)));
+				
+				var headerElement = MarkdownParserElement.createHeaderElement(token.length, this.createContentElement(this.tokenArray.slice(tokenIndex+1, newlineIndex)));
+				this.elementArray = this.elementArray.concat(headerElement);
 				tokenIndex = newlineIndex;
 			}
 			else if(token.token == MarkdownTokenScanner.getToken() || token.token == MarkdownTokenScannerItalic.getToken() || token.token == MarkdownTokenScannerBold.getToken()) // Paragraph
 			{
-				console.log("paragraph")
+				console.log("paragraph");
 				var newlineIndex = tokenIndex
 				while(++newlineIndex < this.tokenArray.length-1 && !(this.tokenArray[newlineIndex].token == MarkdownTokenScannerNewline.getToken() && this.tokenArray[newlineIndex].length >= 2));
-				this.elementArray = this.elementArray.concat(this.createContentElement(this.tokenArray.slice(tokenIndex, newlineIndex)));
+
+				var paragraphElement = MarkdownParserElement.createParagraphElement(this.createContentElement(this.tokenArray.slice(tokenIndex, newlineIndex)))
+				this.elementArray = this.elementArray.concat(paragraphElement);
 				tokenIndex = newlineIndex+1;
 			}
 			else
@@ -160,11 +164,6 @@ export default class MarkdownParser
 			var italicElement = MarkdownParserElement.createItalicElement(this.createContentElement(tokenArray.slice(1, tokenIndex)))
 			if (tokenIndex == tokenArray.length-1) { return italicElement; }
 			return [italicElement].concat(this.createContentElement(tokenArray.slice(tokenIndex+1)));
-		}
-
-		if(token.token == MarkdownTokenScannerHeader.getToken())
-		{
-			return MarkdownParserElement.createHeaderElement(token.length, this.createContentElement(tokenArray.slice(1)));
 		}
 
 	}

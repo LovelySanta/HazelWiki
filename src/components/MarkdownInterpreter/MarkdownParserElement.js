@@ -39,4 +39,9 @@ export default class MarkdownParserElement
 	{
 		return new MarkdownParserElement(MarkdownTokenScannerHeader.getToken(), [level].concat(contentElement));
 	}
+
+	static createParagraphElement(contentElements)
+	{
+		return new MarkdownParserElement('p', [contentElements]);
+	}
 };

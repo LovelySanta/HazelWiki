@@ -32,7 +32,7 @@ export default class MarkdownParserElement
 
 	static createNewlineElement(amount)
 	{
-
+		return new MarkdownParserElement(MarkdownTokenScannerNewline.getToken(), [amount])
 	}
 
 	static createHeaderElement(level, contentElement)

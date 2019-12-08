@@ -28,26 +28,25 @@
 				url: this.src,
 				method: 'GET'
 			}).then((response) => {
-				this.parseSource(this.tokenize(response.data));
+				this.createElements(this.createTokens(response.data));
 			}).catch((error) => {
 				console.log(error);
 			});
 		},
 		methods: {
-			tokenize: (src) => {
+			createTokens: (src) => {
 				return tokenizer.tokenize(src);
 			},
-			parseSource: (src) => {
+			createElements: (src) => {
 				parser.setTokens(src);
 				//parser.logTokens();
-
-				// Parse the tokens to create a recursive tree
-				parser.cleanTokens();
-				parser.compressTokens();
+				parser.cleanupTokens();
 				parser.logTokens();
 
-				parser.parseTokens();
+				// Parse the tokens to create a recursive tree
+				parser.createElements();
 				parser.logElements();
+				return parser.getElements();
 			}
 		}
 	}

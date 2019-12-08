@@ -24,14 +24,21 @@ export default class MarkdownParser
 		this.tokenArray = tokenArray;
 	}
 
-	cleanTokens()
+	cleanupTokens()
+	{
+		// Clean up tokens before creating elements
+		this.removeTokens();
+		this.mergeTokens();
+	}
+
+	removeTokens()
 	{
 		// Removes unneeded tokens
 		var tokenIndex = 0;
 		while(tokenIndex < this.tokenArray.length)
 		{
-			var token = this.tokenArray[tokenIndex];
-			var removeToken = false; // will remove the next token
+			var token = this.tokenArray[tokenIndex++];
+			var removeToken = false; // will remove this token
 
 			if (token.token == MarkdownTokenScanner.getToken() && token.content === "\r")
 			{
@@ -43,58 +50,49 @@ export default class MarkdownParser
 			}
 			else if (token.token == MarkdownTokenScannerHeader.getToken())
 			{
-				var nextToken = this.tokenArray[tokenIndex + 1];
+				var nextToken = this.tokenArray[tokenIndex];
 				if (nextToken.token == MarkdownTokenScanner.getToken() && nextToken.content === " ")
-				{
-					this.tokenArray.splice(tokenIndex+1, 1);
-				}
+					this.tokenArray.splice(tokenIndex--, 1); // remove space after header token
 			}
 
 			if (removeToken)
-			{
-				this.tokenArray.splice(tokenIndex, 1);
-			}
-			else
-			{
-				++tokenIndex;
-			}
+				this.tokenArray.splice(--tokenIndex, 1);
 		}
 	}
 
-	compressTokens()
+	mergeTokens()
 	{
 		// Merges similar tokens next to each other together
 		var tokenIndex = 0;
 		while(tokenIndex < this.tokenArray.length-1)
 		{
 			var token = this.tokenArray[tokenIndex++];
-			var removeToken = false; // will remove the next token
+			var removeToken = false; // will remove this token
+			var nextToken = this.tokenArray[tokenIndex];
 
-			if (token.token == MarkdownTokenScanner.getToken() && this.tokenArray[tokenIndex].token == token.token)
+			if (token.token === MarkdownTokenScanner.getToken() && nextToken.token === token.token)
 			{
-				token.content = token.content.concat(this.tokenArray[tokenIndex].content);
-				token.length += this.tokenArray[tokenIndex].length;
+				nextToken.content = token.content.concat(nextToken.content);
+				nextToken.length += token.length;
 				removeToken = true; // merges text together
 			}
-			else if (token.token == MarkdownTokenScannerNewline.getToken() && this.tokenArray[tokenIndex].token == token.token)
+			else if (token.token === MarkdownTokenScannerNewline.getToken() && nextToken.token === token.token)
 			{
-				token.length += this.tokenArray[tokenIndex].length;
+				nextToken.length += token.length;
 				removeToken = true; // merges newlines together
 			}
-			else if (token.token == MarkdownTokenScannerHeader.getToken() && this.tokenArray[tokenIndex].token == token.token)
+			else if (token.token === MarkdownTokenScannerHeader.getToken() && nextToken.token === token.token)
 			{
-				token.length += this.tokenArray[tokenIndex].length;
+				nextToken.length += token.length;
 				removeToken = true; // merges headers together
 			}
 
 			if (removeToken)
-			{
-				this.tokenArray.splice(tokenIndex--, 1);
-			}
+				this.tokenArray.splice(--tokenIndex, 1);
 		}
 	}
 
-	parseTokens()
+	createElements()
 	{
 		// Strips the tokens into main chunks to create into elements
 		var tokenIndex = -1;
@@ -107,7 +105,7 @@ export default class MarkdownParser
 				var newlineIndex = tokenIndex;
 				while(++newlineIndex < this.tokenArray.length-1 && this.tokenArray[newlineIndex].token != MarkdownTokenScannerNewline.getToken());
 				
-				var headerElement = MarkdownParserElement.createHeaderElement(token.length, this.createContentElement(this.tokenArray.slice(tokenIndex+1, newlineIndex)));
+				var headerElement = MarkdownParserElement.createHeaderElement(token.length, this.createElementContent(this.tokenArray.slice(tokenIndex+1, newlineIndex)));
 				this.elementArray = this.elementArray.concat(headerElement);
 				tokenIndex = newlineIndex;
 			}
@@ -121,83 +119,91 @@ export default class MarkdownParser
 				var newlineIndex = tokenIndex
 				while(++newlineIndex < this.tokenArray.length-1 && !(this.tokenArray[newlineIndex].token == MarkdownTokenScannerNewline.getToken() && this.tokenArray[newlineIndex].length >= 2));
 
-				var paragraphElement = MarkdownParserElement.createParagraphElement(this.createContentElement(this.tokenArray.slice(tokenIndex, newlineIndex)))
+				var paragraphElement = MarkdownParserElement.createParagraphElement(this.createElementContent(this.tokenArray.slice(tokenIndex, newlineIndex)))
 				this.elementArray = this.elementArray.concat(paragraphElement);
 				tokenIndex = newlineIndex+1;
 			}
 		}
 	}
 
-	createContentElement(tokenArray)
+	createElementContent(tokenArray)
 	{
 		console.log(tokenArray)
 		var token = tokenArray[0];
 
-		if(token.token == MarkdownTokenScanner.getToken())
-		{
-			var element = MarkdownParserElement.createTextElement(token.content);
-			if (tokenArray.length == 1) { return element; }
-			return [element].concat(this.createContentElement(tokenArray.slice(1)));
-		}
-
+		// Newline
 		if(token.token == MarkdownTokenScannerNewline.getToken())
 		{
 			var element = MarkdownParserElement.createNewlineElement(token.length)
 			if (tokenArray.length == 1) { return element; }
-			return [element].concat(this.createContentElement(tokenArray.slice(1)));
+			return [element].concat(this.createElementContent(tokenArray.slice(1)));
 		}
 
+		// Regular text
+		if(token.token == MarkdownTokenScanner.getToken())
+		{
+			var element = MarkdownParserElement.createTextElement(token.content);
+			if (tokenArray.length == 1) { return element; }
+			return [element].concat(this.createElementContent(tokenArray.slice(1)));
+		}
+
+		// Bold text
 		if(token.token == MarkdownTokenScannerBold.getToken())
 		{
 			var tokenIndex = 0;
 			while(++tokenIndex < tokenArray.length && tokenArray[tokenIndex].token != MarkdownTokenScannerBold.getToken());
 
-			var boldElement = MarkdownParserElement.createBoldElement(this.createContentElement(tokenArray.slice(1, tokenIndex)))
+			var boldElement = MarkdownParserElement.createBoldElement(this.createElementContent(tokenArray.slice(1, tokenIndex)))
 			if (tokenIndex == tokenArray.length-1) { return boldElement; }
-			return [boldElement].concat(this.createContentElement(tokenArray.slice(tokenIndex+1)));
+			return [boldElement].concat(this.createElementContent(tokenArray.slice(tokenIndex+1)));
 		}
 
+		// Italic text
 		if(token.token == MarkdownTokenScannerItalic.getToken())
 		{
 			var tokenIndex = 0;
 			while(++tokenIndex < tokenArray.length && tokenArray[tokenIndex].token != MarkdownTokenScannerItalic.getToken());
 
-			var italicElement = MarkdownParserElement.createItalicElement(this.createContentElement(tokenArray.slice(1, tokenIndex)))
+			var italicElement = MarkdownParserElement.createItalicElement(this.createElementContent(tokenArray.slice(1, tokenIndex)))
 			if (tokenIndex == tokenArray.length-1) { return italicElement; }
-			return [italicElement].concat(this.createContentElement(tokenArray.slice(tokenIndex+1)));
+			return [italicElement].concat(this.createElementContent(tokenArray.slice(tokenIndex+1)));
 		}
 
+		// Image
 		if(token.token == MarkdownTokenScannerImage.getToken().join(''))
 		{
 			var linkTokenIndex = 0;
 			while(++linkTokenIndex < tokenArray.length && tokenArray[linkTokenIndex].token != MarkdownTokenScannerImage.getToken().join(''));
-			var linkElement = this.createContentElement(tokenArray.slice(1, linkTokenIndex))
+			var linkElement = this.createElementContent(tokenArray.slice(1, linkTokenIndex))
 
 			var captionTokenIndex = linkTokenIndex;
 			while(++captionTokenIndex < tokenArray.length && tokenArray[captionTokenIndex].token != MarkdownTokenScannerImage.getToken().join(''));
-			var captionElement = this.createContentElement(tokenArray.slice(linkTokenIndex+1, captionTokenIndex))
+			var captionElement = this.createElementContent(tokenArray.slice(linkTokenIndex+1, captionTokenIndex))
 
 			var imageElement = MarkdownParserElement.createImageElement(linkElement, captionElement)
 			if (captionTokenIndex == tokenArray.length-1) { return imageElement; }
-			return [imageElement].concat(this.createContentElement(tokenArray.slice(captionTokenIndex+1)));
+			return [imageElement].concat(this.createElementContent(tokenArray.slice(captionTokenIndex+1)));
 		}
 
+		// Link
 		if(token.token == MarkdownTokenScannerLink.getToken().join(''))
 		{
 			var linkTokenIndex = 0;
 			while(++linkTokenIndex < tokenArray.length && tokenArray[linkTokenIndex].token != MarkdownTokenScannerLink.getToken().join(''));
-			var linkElement = this.createContentElement(tokenArray.slice(1, linkTokenIndex))
+			var linkElement = this.createElementContent(tokenArray.slice(1, linkTokenIndex))
 
 			var captionTokenIndex = linkTokenIndex;
 			while(++captionTokenIndex < tokenArray.length && tokenArray[captionTokenIndex].token != MarkdownTokenScannerLink.getToken().join(''));
-			var captionElement = this.createContentElement(tokenArray.slice(linkTokenIndex+1, captionTokenIndex))
+			var captionElement = this.createElementContent(tokenArray.slice(linkTokenIndex+1, captionTokenIndex))
 
 			var linkingElement = MarkdownParserElement.createImageElement(linkElement, captionElement)
 			if (captionTokenIndex == tokenArray.length-1) { return linkingElement; }
-			return [linkingElement].concat(this.createContentElement(tokenArray.slice(captionTokenIndex+1)));
+			return [linkingElement].concat(this.createElementContent(tokenArray.slice(captionTokenIndex+1)));
 		}
 
 	}
+
+	getElements() { return this.elementArray; }
 
 	logTokens()   { console.log(this.tokenArray  ); }
 	logElements() { console.log(this.elementArray); }

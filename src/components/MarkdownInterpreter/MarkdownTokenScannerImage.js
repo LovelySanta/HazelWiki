@@ -13,6 +13,7 @@ export default class MarkdownTokenScannerImage extends MarkdownTokenScanner
 		super();
 		this.token = MarkdownTokenScannerImage.getToken();
 		this.tokenStage = 0;
+		this.srcStage = 0;
 	}
 
 	static getToken() { return ['![', '](', ')']; }
@@ -26,5 +27,16 @@ export default class MarkdownTokenScannerImage extends MarkdownTokenScanner
 		} else {
 			return MarkdownToken.nullToken();
 		}
+	}
+	
+	unscan(token)
+	{
+		if (token.token == this.token.join(''))
+		{
+			var src = this.token[this.tokenStage];
+			if (++this.tokenStage == this.token.length) { this.tokenStage = 0; } // move to the next stage
+			return src;
+		}
+		return '';
 	}
 };

@@ -29,6 +29,8 @@
 				method: 'GET'
 			}).then((response) => {
 				this.createElements(this.createTokens(response.data));
+				console.log(tokenizer.tokenize(response.data));
+				console.log(tokenizer.untokenize(tokenizer.tokenize(response.data)));
 			}).catch((error) => {
 				console.log(error);
 			});
@@ -41,11 +43,11 @@
 				parser.setTokens(src);
 				//parser.logTokens();
 				parser.cleanupTokens();
-				parser.logTokens();
+				//parser.logTokens();
 
 				// Parse the tokens to create a recursive tree
 				parser.createElements();
-				parser.logElements();
+				//parser.logElements();
 				return parser.getElements();
 			}
 		}

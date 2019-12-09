@@ -26,4 +26,16 @@ export default class MarkdownTokenScannerHeader extends MarkdownTokenScanner
 			return MarkdownToken.nullToken();
 		}
 	}
+	
+	unscan(token)
+	{
+		if (token.token == this.token)
+		{
+			var src = '';
+			for (var i = token.length; i > 0; i--)
+				src = src.concat(this.token);
+			return src;
+		}
+		return '';
+	}
 };

@@ -24,4 +24,11 @@ export default class MarkdownTokenScannerBold extends MarkdownTokenScanner
 			return MarkdownToken.nullToken();
 		}
 	}
+
+	unscan(token)
+	{
+		if (token.token == this.token)
+			return this.token.concat(this.token);
+		return '';
+	}
 };

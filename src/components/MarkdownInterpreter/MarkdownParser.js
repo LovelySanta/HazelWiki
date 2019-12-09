@@ -27,8 +27,14 @@ export default class MarkdownParser
 	cleanupTokens()
 	{
 		// Clean up tokens before creating elements
+		this.untokenizeCodeTokens();
 		this.removeTokens();
 		this.mergeTokens();
+	}
+
+	untokenizeCodeTokens()
+	{
+		// Untokenzize code blocks
 	}
 
 	removeTokens()

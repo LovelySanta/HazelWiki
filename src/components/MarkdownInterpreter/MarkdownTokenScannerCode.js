@@ -21,7 +21,10 @@ export default class MarkdownTokenScannerCode extends MarkdownTokenScanner
 		if (source.charAt(0) == this.token) {
 			var charIndex = 0
 			while(source.charAt(++charIndex) == this.token); // group all the '`' together
-			return new MarkdownToken(this.token, null, charIndex);
+			if (charIndex < 3)
+				return new MarkdownToken(this.token, null, 1);
+			else
+				return new MarkdownToken(this.token, null, 3);
 		} else {
 			return MarkdownToken.nullToken();
 		}

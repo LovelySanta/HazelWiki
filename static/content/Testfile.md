@@ -18,7 +18,7 @@ Here is an image for you: ![Image caption](http://www.image.com)
 And here is a link for you: [Link caption](http://www.link.com)
 And here you have a link with an image! [![Image caption](http://www.image.com)](http://www.link.com)
 
-This is no code, but `This is!`
+This is no code, but `This is! ![Image caption](http://www.image.com)`
 [yess `code linking` ..](http://www.link.com)
 
 ```cpp

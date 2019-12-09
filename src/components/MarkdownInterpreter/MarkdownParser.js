@@ -1,4 +1,5 @@
 import MarkdownToken from './MarkdownToken'
+import MarkdownTokenizer from './MarkdownTokenizer'
 
 import MarkdownTokenScanner        from './MarkdownTokenScanner'        // Base scanner
 import MarkdownTokenScannerNewline from './MarkdownTokenScannerNewline' // Newline scanner
@@ -15,13 +16,22 @@ export default class MarkdownParser
 {
 	constructor()
 	{
+		this.tokenizer = new MarkdownTokenizer(true);
+		this.codeScanner = new MarkdownTokenizer(false);
+
+		this.src = '';
 		this.tokenArray = [];
 		this.elementArray = [];
 	}
 
-	setTokens(tokenArray)
+	setSrc(src)
 	{
-		this.tokenArray = tokenArray;
+		this.src = src;
+	}
+
+	createTokens()
+	{
+		this.tokenArray = this.tokenizer.tokenize(this.src);
 	}
 
 	cleanupTokens()
@@ -35,6 +45,25 @@ export default class MarkdownParser
 	untokenizeCodeTokens()
 	{
 		// Untokenzize code blocks
+		var tokenIndex = 0;
+		while(tokenIndex < this.tokenArray.length-1)
+		{
+			var token = this.tokenArray[tokenIndex++];
+			if (token.token == MarkdownTokenScannerCode.getToken() && (token.length == 1 || token.length == 3))
+			{
+				// Extract the start and end of the code part
+				var startIndex = tokenIndex--;
+				//console.log(startIndex)
+				while(++tokenIndex < this.tokenArray.length-1 && (this.tokenArray[tokenIndex].token != token.token || this.tokenArray[tokenIndex].length < token.length));
+				var endIndex = tokenIndex++;
+
+				// Convert the code to text
+				var txt = this.codeScanner.tokenize(this.tokenizer.untokenize(this.tokenArray.slice(startIndex, endIndex))).slice(0, -1);
+				this.tokenArray.splice(startIndex, endIndex-startIndex, ...txt);
+				//console.log(this.tokenArray);
+				tokenIndex = startIndex + txt.length + 1;
+			}
+		}
 	}
 
 	removeTokens()
@@ -202,7 +231,7 @@ export default class MarkdownParser
 			while(++captionTokenIndex < tokenArray.length && tokenArray[captionTokenIndex].token != MarkdownTokenScannerLink.getToken().join(''));
 			var captionElement = this.createElementContent(tokenArray.slice(linkTokenIndex+1, captionTokenIndex))
 
-			var linkingElement = MarkdownParserElement.createImageElement(linkElement, captionElement)
+			var linkingElement = MarkdownParserElement.createLinkElement(linkElement, captionElement)
 			if (captionTokenIndex == tokenArray.length-1) { return linkingElement; }
 			return [linkingElement].concat(this.createElementContent(tokenArray.slice(captionTokenIndex+1)));
 		}

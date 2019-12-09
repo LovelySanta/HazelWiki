@@ -10,19 +10,13 @@ import MarkdownTokenScannerBold    from './MarkdownTokenScannerBold'    // Bold 
 import MarkdownTokenScannerItalic  from './MarkdownTokenScannerItalic'  // Italic scanner
 
 export default class MarkdownTokenizer {
-	constructor(addScanners) {
+	constructor() {
 		this.scanner = new MarkdownTokenScanner();
+	}
 
-		if (addScanners)
-		{
-			this.scanner.addScanner(new MarkdownTokenScannerCode());
-			this.scanner.addScanner(new MarkdownTokenScannerNewline());
-			this.scanner.addScanner(new MarkdownTokenScannerImage());
-			this.scanner.addScanner(new MarkdownTokenScannerLink());
-			this.scanner.addScanner(new MarkdownTokenScannerHeader());
-			this.scanner.addScanner(new MarkdownTokenScannerBold());
-			this.scanner.addScanner(new MarkdownTokenScannerItalic());
-		}
+	addScanner(scannerToAdd)
+	{
+		this.scanner.addScanner(scannerToAdd);
 	}
 
 	tokenize(src)

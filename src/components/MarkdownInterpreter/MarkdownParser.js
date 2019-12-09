@@ -16,8 +16,20 @@ export default class MarkdownParser
 {
 	constructor()
 	{
-		this.tokenizer = new MarkdownTokenizer(true);
-		this.codeScanner = new MarkdownTokenizer(false);
+		// tokenizer is used to create tokens
+		this.tokenizer = new MarkdownTokenizer();
+		this.tokenizer.addScanner(new MarkdownTokenScannerCode());
+		this.tokenizer.addScanner(new MarkdownTokenScannerNewline());
+		this.tokenizer.addScanner(new MarkdownTokenScannerImage());
+		this.tokenizer.addScanner(new MarkdownTokenScannerLink());
+		this.tokenizer.addScanner(new MarkdownTokenScannerHeader());
+		this.tokenizer.addScanner(new MarkdownTokenScannerBold());
+		this.tokenizer.addScanner(new MarkdownTokenScannerItalic());
+
+		// codeScanner is used to convert src to text only (used for code and code block)
+		this.codeScanner = new MarkdownTokenizer();
+		this.codeBlockScanner = new MarkdownTokenizer();
+		this.codeBlockScanner.addScanner(new MarkdownTokenScannerNewline());
 
 		this.src = '';
 		this.tokenArray = [];
@@ -49,19 +61,29 @@ export default class MarkdownParser
 		while(tokenIndex < this.tokenArray.length-1)
 		{
 			var token = this.tokenArray[tokenIndex++];
-			if (token.token == MarkdownTokenScannerCode.getToken() && (token.length == 1 || token.length == 3))
+			if (token.token == MarkdownTokenScannerCode.getToken())
 			{
 				// Extract the start and end of the code part
 				var startIndex = tokenIndex--;
-				//console.log(startIndex)
 				while(++tokenIndex < this.tokenArray.length-1 && (this.tokenArray[tokenIndex].token != token.token || this.tokenArray[tokenIndex].length < token.length));
 				var endIndex = tokenIndex++;
 
-				// Convert the code to text
-				var txt = this.codeScanner.tokenize(this.tokenizer.untokenize(this.tokenArray.slice(startIndex, endIndex))).slice(0, -1);
-				this.tokenArray.splice(startIndex, endIndex-startIndex, ...txt);
-				//console.log(this.tokenArray);
-				tokenIndex = startIndex + txt.length + 1;
+				// Convert the inside of code to text tokens only
+				var src = this.tokenizer.untokenize(this.tokenArray.slice(startIndex, endIndex))
+				var tokenArray = []
+				if (token.length == 1)
+				{
+					tokenArray = this.codeScanner.tokenize(src).slice(0, -1);
+					
+				}
+				else if (token.length == 3)
+				{
+					tokenArray = this.codeBlockScanner.tokenize(src).slice(0, -1);
+				}
+
+				// replace the tokens with the newly created tokens
+				this.tokenArray.splice(startIndex, endIndex-startIndex, ...tokenArray);
+				tokenIndex = startIndex + tokenArray.length + 1;
 			}
 		}
 	}

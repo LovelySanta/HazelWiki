@@ -2,7 +2,7 @@ import MarkdownToken from './MarkdownToken'
 
 import MarkdownTokenScanner from './MarkdownTokenScanner'
 
-export default class MarkdownTokenScannerNewline extends MarkdownTokenScanner
+export default class MarkdownTokenScannerBold extends MarkdownTokenScanner
 {
 	/* Abstract base class, this class cannot scan for specific tokens,
 	 * Instead, it will detect everything that specific scanners cannot
@@ -11,17 +11,15 @@ export default class MarkdownTokenScannerNewline extends MarkdownTokenScanner
 	constructor()
 	{
 		super();
-		this.token = MarkdownTokenScannerNewline.getToken();
+		this.token = MarkdownTokenScannerBold.getToken();
 	}
 
-	static getToken() { return '\n'; }
+	static getToken() { return '**'; }
 
 	scan(source)
 	{
-		if (source.charAt(0) == this.token) {
-			var charIndex = 0
-			while(source.charAt(++charIndex) == this.token); // group all the newlines together
-			return new MarkdownToken(this.token, null, charIndex);
+		if (source.substr(0, this.token.length) == this.token) {
+			return new MarkdownToken(this.token, null, this.token.length);
 		} else {
 			return MarkdownToken.nullToken();
 		}

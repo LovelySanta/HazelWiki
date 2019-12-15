@@ -1,74 +1,46 @@
 import MarkdownToken from './MarkdownToken'
 
-import MarkdownTokenScanner          from './MarkdownTokenScanner'          // Base scanner
-import MarkdownTokenScannerCode      from './MarkdownTokenScannerCode'      // Code scanner
-import MarkdownTokenScannerCodeBlock from './MarkdownTokenScannerCodeBlock' // Code block scanner
-import MarkdownTokenScannerHeader    from './MarkdownTokenScannerHeader'    // Header scanner
-import MarkdownTokenScannerLink      from './MarkdownTokenScannerLink'      // Link scanner
-import MarkdownTokenScannerImage     from './MarkdownTokenScannerImage'     // Image scanner
-import MarkdownTokenScannerNewline   from './MarkdownTokenScannerNewline'   // Newline scanner
+import MarkdownTokenScanner        from './MarkdownTokenScanner'        // Base scanner
+import MarkdownTokenScannerNewline from './MarkdownTokenScannerNewline' // Newline scanner
+import MarkdownTokenScannerCode    from './MarkdownTokenScannerCode'    // Code scanner
+import MarkdownTokenScannerImage   from './MarkdownTokenScannerImage'   // Image scanner
+import MarkdownTokenScannerLink    from './MarkdownTokenScannerLink'    // Link scanner
+import MarkdownTokenScannerHeader  from './MarkdownTokenScannerHeader'  // Header scanner
+import MarkdownTokenScannerBold    from './MarkdownTokenScannerBold'    // Bold scanner
+import MarkdownTokenScannerItalic  from './MarkdownTokenScannerItalic'  // Italic scanner
 
 export default class MarkdownTokenizer {
 	constructor() {
-		this.scanners = [ // Scanner with highest priority must be on top
-			new MarkdownTokenScannerCodeBlock(),
-			new MarkdownTokenScannerCode(),
-
-			new MarkdownTokenScannerHeader(),
-
-			new MarkdownTokenScannerImage(),
-			new MarkdownTokenScannerLink(),
-
-			new MarkdownTokenScannerNewline(),
-			new MarkdownTokenScanner()
-		];
-		this.scannersAmount = this.scanners.length;
-		this.scanners[this.scannersAmount-1].registerScanner(this.scanners.slice(0, this.scannersAmount-1));
+		this.scanner = new MarkdownTokenScanner();
 	}
 
-	tokenize(src) {
-		this.tokens = this._createTokenArray(src);
-		this._cleanTokenArray();
-		console.log(this.tokens);
+	addScanner(scannerToAdd)
+	{
+		this.scanner.addScanner(scannerToAdd);
 	}
 
-	_createTokenArray(source) {
-		if (source == null || source == '') {
-			return [MarkdownToken.endOfFileToken()];
-		} else {
-			for (var scannerIndex = 0; scannerIndex < this.scannersAmount; scannerIndex++)
-			{
-				var token = this.scanners[scannerIndex].scan(source);
-				if (token.isValid()) {
-					return [token].concat(this._createTokenArray(source.substr(token.length)));
-				}
-			}
-			return [MarkdownToken.errorToken()];
-		}
+	tokenize(src)
+	{
+		// Compiles a source into an array of tokens
+		var token = this.scanner.scan(src);
+		if (token.isEnd()) { return token; }
+		return [token].concat(this.tokenize(src.substr(token.length)));
 	}
 
-	_cleanTokenArray() {
-		var alteredArray = false;
-		var tokenIndex = this.tokens.length;
-		while(--tokenIndex >= 0) {
-			var token = this.tokens[tokenIndex];
-			var removeToken = false;
+	untokenize(tokenArray)
+	{
+		// Uncompiles an array of tokens back to the source and some post processing
+		var src = this.untokenizeRecursive(tokenArray);
 
-			if (token.token == 'TXT' && token.length == 1) { // Remove empty string tokens
-				removeToken = true;
-			} else if (token.token == '\n' && this.tokens[tokenIndex-1].token == '\n') { // Merge newline tokens
-				this.tokens[tokenIndex-1].length += token.length;
-				removeToken = true;
-			}
+		src = src.replace(/\n\n/g, '\n');
 
-			if (removeToken) {
-				this.tokens.splice(tokenIndex++, 1);
-				alteredArray = true;
-			}
-		}
+		return src;
+	}
 
-		if (alteredArray) {
-			return this._cleanTokenArray();
-		}
+	untokenizeRecursive(tokenArray)
+	{
+		// Uncompiles an array of tokens back to the source recursivly
+		if (tokenArray.length <= 1) { return this.scanner.unscan(tokenArray[0]); }
+		return this.scanner.unscan(tokenArray[0]).concat(this.untokenizeRecursive(tokenArray.slice(1)))
 	}
 };

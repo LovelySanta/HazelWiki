@@ -6,7 +6,7 @@
 
 <script>
 	import axios from 'axios'
-	import MarkdownParser from './MarkdownParser.js'
+	import MarkdownParser from './MarkdownParser'
 
 	const parser = new MarkdownParser();
 
@@ -26,17 +26,24 @@
 				url: this.src,
 				method: 'GET'
 			}).then((response) => {
-				parser.setSource(response.data);
-				this.compileSource();
+				this.parse(response.data);
 			}).catch((error) => {
 				console.log(error);
 			});
 		},
 		methods: {
-			compileSource: () => {
-				// https://blog.beezwax.net/2017/07/07/writing-a-markdown-compiler/
-				//parser.log();
-				parser.parseSource();
+			parse: (src) => {
+				parser.setSrc(src);
+
+				// Find tokens in the source
+				parser.createTokens(src);
+				parser.cleanupTokens();
+				//parser.logTokens();
+
+				// Create elements from tokens
+				parser.createElements();
+				parser.logElements();
+				return parser.getElements();
 			}
 		}
 	}

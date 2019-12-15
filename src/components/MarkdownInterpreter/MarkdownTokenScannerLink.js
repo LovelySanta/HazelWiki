@@ -1,61 +1,42 @@
 import MarkdownToken from './MarkdownToken'
 
-import MarkdownTokenScanner      from './MarkdownTokenScanner'
-import MarkdownTokenScannerCode  from './MarkdownTokenScannerCode'
-import MarkdownTokenScannerImage from './MarkdownTokenScannerImage'
+import MarkdownTokenScanner from './MarkdownTokenScanner'
 
-export default class MarkdownTokenScannerLink extends MarkdownTokenScanner {
-	constructor() {
-		super(null);
-
-		// Token for this scanner
-		this.token = this.getToken();
+export default class MarkdownTokenScannerLink extends MarkdownTokenScanner
+{
+	/* Abstract base class, this class cannot scan for specific tokens,
+	 * Instead, it will detect everything that specific scanners cannot
+	 * detect themselves.
+	 */
+	constructor()
+	{
+		super();
+		this.token = MarkdownTokenScannerLink.getToken();
+		this.tokenStage = 0;
+		this.srcStage = 0;
 	}
 
-	getToken() { return ['[','](',')']; }
-	getRegisterToken() { return this.getToken().slice(0, 2); }
+	static getToken() { return ['[', '](', ')']; }
 
-	scan(source) {
-		if (source.substring(0, this.token[0].length) == this.token[0]) {
-			var tokenContent = []; // Content of this link token
-			var tokenLength  = this.token[0].length;  // Length of this token
-
-			// Scan the content of the link caption
-			tokenContent[0] = [];
-			var tokenContent0Amount = 0;
-			var scanners = [
-				new MarkdownTokenScannerCode(),
-				new MarkdownTokenScannerImage(),
-				new MarkdownTokenScanner()
-			];
-			var scannersAmount = scanners.length;
-			scanners[scannersAmount-1].registerScanner(scanners.slice(0, scannersAmount-1));
-
-			while(tokenLength < source.length && source.substring(tokenLength, tokenLength + this.token[1].length) != this.token[1]) {
-				var prevTokenLength = tokenLength;
-				for (var scannerIndex = 0; scannerIndex < scannersAmount; scannerIndex++)
-				{
-					var token = scanners[scannerIndex].scan(source.substring(tokenLength, source.length));
-					if (!token.isNull()) {
-						tokenContent[0][tokenContent0Amount++] = token;
-						tokenLength += token.length;
-					}
-				}
-				if (tokenLength == prevTokenLength) {
-					console.error("Could not scan this!");
-					console.error(source.substring(tokenLength, source.length));
-					return MarkdownToken.errorToken();
-				}
-			}
-
-			// Content of the link link
-			tokenContent[1] = source.substring(source.indexOf(this.token[1]) + this.token[1].length, source.indexOf(this.token[2]));
-			tokenLength += tokenContent[1].length + this.token[1].length + this.token[2].length;
-
-			// Create a token for this link
-			return new MarkdownToken(this.token.join(''), tokenContent, tokenLength);
+	scan(source)
+	{
+		if (source.substr(0, this.token[this.tokenStage].length) == this.token[this.tokenStage]) {
+			var token = new MarkdownToken(this.token.join(''), null, this.token[this.tokenStage].length);
+			if (++this.tokenStage == this.token.length) { this.tokenStage = 0; } // move to the next stage
+			return token;
 		} else {
 			return MarkdownToken.nullToken();
 		}
+	}
+	
+	unscan(token)
+	{
+		if (token.token == this.token.join(''))
+		{
+			var src = this.token[this.tokenStage];
+			if (++this.tokenStage == this.token.length) { this.tokenStage = 0; } // move to the next stage
+			return src;
+		}
+		return '';
 	}
 };

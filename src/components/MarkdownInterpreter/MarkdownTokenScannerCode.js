@@ -2,23 +2,43 @@ import MarkdownToken from './MarkdownToken'
 
 import MarkdownTokenScanner from './MarkdownTokenScanner'
 
-export default class MarkdownTokenScannerCode extends MarkdownTokenScanner {
-	constructor() {
-		super(null);
-
-		// Token for this scanner
-		this.token = this.getToken();
+export default class MarkdownTokenScannerCode extends MarkdownTokenScanner
+{
+	/* Abstract base class, this class cannot scan for specific tokens,
+	 * Instead, it will detect everything that specific scanners cannot
+	 * detect themselves.
+	 */
+	constructor()
+	{
+		super();
+		this.token = MarkdownTokenScannerCode.getToken();
 	}
 
-	getToken() { return ["`","`"]; }
-	getRegisterToken() { return this.getToken()[0]; }
+	static getToken() { return '`'; }
 
-	scan(source) {
-		if (source.substring(0, this.token[0].length) == this.token[0]) {
-			var tokenContent = source.substring(this.token[0].length, source.indexOf(this.token[1], this.token[0].length));
-			return new MarkdownToken(this.token.join(''), tokenContent, this.token[0].length + tokenContent.length + this.token[1].length);
+	scan(source)
+	{
+		if (source.charAt(0) == this.token) {
+			var charIndex = 0
+			while(source.charAt(++charIndex) == this.token); // group all the '`' together
+			if (charIndex < 3)
+				return new MarkdownToken(this.token, null, 1);
+			else
+				return new MarkdownToken(this.token, null, 3);
 		} else {
 			return MarkdownToken.nullToken();
 		}
+	}
+
+	unscan(token)
+	{
+		if (token.token == this.token)
+		{
+			var src = '';
+			for (var i = token.length; i > 0; i--)
+				src = src.concat(this.token);
+			return src;
+		}
+		return '';
 	}
 };

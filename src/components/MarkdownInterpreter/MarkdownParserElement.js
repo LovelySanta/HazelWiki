@@ -17,12 +17,12 @@ export default class MarkdownParserElement
 
 	static createParagraphElement(contentElements)
 	{
-		return new MarkdownParserElement('p', [contentElements]);
+		return new MarkdownParserElement('p', contentElements);
 	}
 
 	static createTextElement(content)
 	{
-		return new MarkdownParserElement(MarkdownTokenScanner.getToken(), [content]);
+		return new MarkdownParserElement(MarkdownTokenScanner.getToken(), content);
 	}
 
 	static createBoldElement(boldContent)
@@ -53,6 +53,16 @@ export default class MarkdownParserElement
 	static createLinkElement(linkElement, captionElement)
 	{
 		return new MarkdownParserElement(MarkdownTokenScannerLink.getToken().join(''), [linkElement].concat(captionElement));
+	}
+
+	static createCodeElement(codeContent)
+	{
+		return new MarkdownParserElement(MarkdownTokenScannerCode.getToken(), [codeContent]);
+	}
+
+	static createCodeBlockElement(codeLanguage, codeContent)
+	{
+		return new MarkdownParserElement(MarkdownTokenScannerCode.getToken().repeat(3), [codeLanguage].concat(codeContent));
 	}
 
 };

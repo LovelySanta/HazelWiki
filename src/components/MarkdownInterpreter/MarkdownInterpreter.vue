@@ -26,13 +26,13 @@
 				url: this.src,
 				method: 'GET'
 			}).then((response) => {
-				this.createElements(response.data);
+				this.parse(response.data);
 			}).catch((error) => {
 				console.log(error);
 			});
 		},
 		methods: {
-			createElements: (src) => {
+			parse: (src) => {
 				parser.setSrc(src);
 
 				// Find tokens in the source

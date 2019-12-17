@@ -40,17 +40,15 @@
 </template>
 
 <script>
-	import MarkdownElement from "./MarkdownElement.vue";
-
 	export default {
 		props: {
 			element: {
-				type: Array,
+				type: Object,
 				required: true
 			}
 		},
 		components: {
-			'markdown-element' : MarkdownElement,
+			'markdown-element' : () => import('./MarkdownElement.vue') // Recursive dependency
 		},
 		computed: {
 			contentElements: function() {

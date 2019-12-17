@@ -14,11 +14,11 @@ This is a regular block of text
 **This is a bold block of text**
 *This is an italic block of text*
 
-Here is an image for you: ![Image caption](http://www.image.com)
+Here is an image for you: ![Image caption](https://via.placeholder.com/100)
 And here is a link for you: [Link caption](http://www.link.com)
-And here you have a link with an image! [![Image caption](http://www.image.com)](http://www.link.com)
+And here you have a link with an image! [![Image caption](https://via.placeholder.com/100)](http://www.link.com)
 
-This is no code, but `This is! ![Image caption](http://www.image.com)`
+This is no code, but `This is! ![Image caption](https://via.placeholder.com/100)`
 [yess `code linking` ..](http://www.link.com)
 
 ```cpp

@@ -1,0 +1,32 @@
+@import "./global.scss";
+
+// General markdown
+$MarkdownInterpreter_color: #24292e;
+$MarkdownInterpreter_font-family: $Global_font_family;
+$MarkdownInterpreter_font-size: 14px;
+$MarkdownInterpreter_font-weight: normal;
+$MarkdownInterpreter_line-height: 1.5;
+
+// Bold text
+$MarkdownInterpreter_strong_font-weight: 600;
+
+// Paragraph
+$MarkdownInterpreter_p_margin-top: 0px;
+$MarkdownInterpreter_p_margin-bottom: 16px;
+
+// Header specific
+$MarkdownInterpreter_h_margin-top: 24px;
+$MarkdownInterpreter_h_margin-bottom: $MarkdownInterpreter_p_margin-bottom;
+$MarkdownInterpreter_h_font-weight: $MarkdownInterpreter_strong_font-weight;
+$MarkdownInterpreter_h_line-height: 1.25;
+$MarkdownInterpreter_h_border-color: #eaecef;
+$MarkdownInterpreter_h_border-size: 1px;
+
+$MarkdownInterpreter_h1_size: 2.000em;
+$MarkdownInterpreter_h2_size: 1.500em;
+$MarkdownInterpreter_h3_size: 1.250em;
+$MarkdownInterpreter_h4_size: 1.000em;
+$MarkdownInterpreter_h5_size: 0.875em;
+$MarkdownInterpreter_h6_size: 0.850em;
+
+$MarkdownInterpreter_h6_color: #6a737d;

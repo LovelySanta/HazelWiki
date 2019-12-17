@@ -20,3 +20,12 @@
 		}
 	}
 </script>
+
+<style scoped lang="scss" rel="stylesheet/scss">
+	@import "@/scss/MarkdownInterpreter.scss";
+
+	p{
+		margin-top: $MarkdownInterpreter_p_margin-top;
+		margin-bottom: $MarkdownInterpreter_p_margin-bottom;
+	}
+</style>

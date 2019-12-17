@@ -1,5 +1,5 @@
 <template>
-	<div class="md-container">
+	<div class="markdown-body">
 		<markdown-element v-for="(element, index) in elements"
 							:key="index"
 							:element="element"
@@ -56,3 +56,17 @@
 		}
 	}
 </script>
+
+<style lang="scss" rel="stylesheet/scss">
+	@import "@/scss/MarkdownInterpreter.scss";
+
+	.markdown-body {
+		color: $MarkdownInterpreter_color;
+
+		font-family: $MarkdownInterpreter_font-family;
+		font-size: $MarkdownInterpreter_font-size;
+		font-weight: $MarkdownInterpreter_font-weight;
+
+		line-height: $MarkdownInterpreter_line-height;
+	}
+</style>

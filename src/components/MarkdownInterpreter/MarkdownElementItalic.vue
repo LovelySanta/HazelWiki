@@ -1,10 +1,10 @@
 <template>
-	<i>
+	<em>
 		<markdown-element v-for="(contentElement, contentIndex) in element.content"
 							:key="contentIndex"
 							:element="contentElement"
 		/>
-	</i>
+	</em>
 </template>
 
 <script>
@@ -20,3 +20,11 @@
 		}
 	}
 </script>
+
+<style scoped lang="scss" rel="stylesheet/scss">
+	@import "@/scss/MarkdownInterpreter.scss";
+
+	em {
+		font-style: italic;
+	}
+</style>

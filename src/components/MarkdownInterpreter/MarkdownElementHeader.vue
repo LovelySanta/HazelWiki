@@ -59,3 +59,53 @@
 		}
 	}
 </script>
+
+<style scoped lang="scss" rel="stylesheet/scss">
+	@import "@/scss/MarkdownInterpreter.scss";
+
+	h1, h2, h3, h4, h5, h6{
+		margin-top: $MarkdownInterpreter_h_margin-top;
+		margin-bottom: $MarkdownInterpreter_h_margin-bottom;
+
+		font-family: $MarkdownInterpreter_font-family;
+		font-weight: $MarkdownInterpreter_h_font-weight;
+		color: $MarkdownInterpreter_color;
+
+		line-height: $MarkdownInterpreter_h_line-height;
+
+		border-color: $MarkdownInterpreter_h_border-color;
+	}
+
+	h1, h2, h3, h4, h5, h6 :first-child{
+		margin-top: 0!important;
+	}
+
+	h1, h2{
+		border-bottom: $MarkdownInterpreter_h_border-size solid $MarkdownInterpreter_h_border-color;
+	}
+
+	h1{
+		font-size: $MarkdownInterpreter_h1_size;
+	}
+
+	h2{
+		font-size: $MarkdownInterpreter_h2_size;
+	}
+
+	h3{
+		font-size: $MarkdownInterpreter_h3_size;
+	}
+
+	h4{
+		font-size: $MarkdownInterpreter_h4_size;
+	}
+
+	h5{
+		font-size: $MarkdownInterpreter_h5_size;
+	}
+
+	h6{
+		font-size: $MarkdownInterpreter_h6_size;
+		color: $MarkdownInterpreter_h6_color;
+	}
+</style>

@@ -73,7 +73,7 @@ export default class MarkdownParser
 				if (token.length == 1)
 				{
 					tokenArray = this.codeScanner.tokenize(src).slice(0, -1);
-					
+
 				}
 				else if (token.length == 3)
 				{
@@ -171,7 +171,7 @@ export default class MarkdownParser
 			{
 				var newlineIndex = tokenIndex;
 				while(++newlineIndex < this.tokenArray.length-1 && this.tokenArray[newlineIndex].token != MarkdownTokenScannerNewline.getToken());
-				
+
 				var headerElement = MarkdownParserElement.createHeaderElement(token.length, this.createElementContent(this.tokenArray.slice(tokenIndex+1, newlineIndex)));
 				this.elementArray = this.elementArray.concat(headerElement);
 				tokenIndex = newlineIndex;

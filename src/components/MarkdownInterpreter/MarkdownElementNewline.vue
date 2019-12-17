@@ -1,5 +1,5 @@
 <template>
-	<br>
+	<br :v-repeat="element.content[0]">
 </template>
 
 <script>

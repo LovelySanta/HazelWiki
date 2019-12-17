@@ -7,6 +7,7 @@
 		<markdown-bold      v-if="element.token === '**'"    :element="element"/>
 		<markdown-italic    v-if="element.token === '*'"     :element="element"/>
 		<markdown-code      v-if="element.token === '`'"     :element="element"/>
+		<markdown-codeblock v-if="element.token === '```'"   :element="element"/>
 		<markdown-link      v-if="element.token === '[]()'"  :element="element"/>
 		<markdown-image     v-if="element.token === '![]()'" :element="element"/>
 	</span>
@@ -20,6 +21,7 @@
 	import MarkdownElementBold      from "./MarkdownElementBold.vue";
 	import MarkdownElementItalic    from "./MarkdownElementItalic.vue";
 	import MarkdownElementCode      from "./MarkdownElementCode.vue";
+	import MarkdownElementCodeblock from "./MarkdownElementCodeblock.vue";
 	import MarkdownElementLink      from "./MarkdownElementLink.vue";
 	import MarkdownElementImage     from "./MarkdownElementImage.vue";
 
@@ -38,6 +40,7 @@
 			'markdown-bold'      : MarkdownElementBold,
 			'markdown-italic'    : MarkdownElementItalic,
 			'markdown-code'      : MarkdownElementCode,
+			'markdown-codeblock' : MarkdownElementCodeblock,
 			'markdown-link'      : MarkdownElementLink,
 			'markdown-image'     : MarkdownElementImage,
 		}

@@ -1,10 +1,5 @@
 <template>
-	<code>
-		<markdown-element v-for="(contentElement, contentIndex) in contentElements"
-							:key="contentIndex"
-							:element="contentElement"
-		/>
-	</code>
+	<pre><code>{{ contentString }}</code></pre>
 </template>
 
 <script>
@@ -28,6 +23,17 @@
 				if(this.element.token === '```' && this.element.content.length > 1)
 					return this.element.content.slice(1);
 				return [];
+			},
+			contentString: function() {
+				var content = ""
+				for(var i = 0; i < this.contentElements.length; i++)
+				{
+					if(this.contentElements[i].token === '\n')
+						content = content.concat('\n');
+					else
+						content = content.concat(this.contentElements[i].content);
+				}
+				return content;
 			}
 		}
 	}

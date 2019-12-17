@@ -47,7 +47,7 @@
 
 				// Create elements from tokens
 				parser.createElements();
-				parser.logElements();
+				//parser.logElements();
 				return parser.getElements();
 			}
 		},

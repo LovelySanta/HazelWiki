@@ -1,5 +1,5 @@
 <template>
-	<span v-if="element.token === '#'">
+	<span>
 		<h1 v-if="element.content[0] === 1">
 			<markdown-element v-for="(contentElement, contentIndex) in contentElements"
 								:key="contentIndex"

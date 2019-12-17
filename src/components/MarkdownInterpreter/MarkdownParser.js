@@ -1,4 +1,3 @@
-import MarkdownToken from './MarkdownToken'
 import MarkdownTokenizer from './MarkdownTokenizer'
 
 import MarkdownTokenScanner        from './MarkdownTokenScanner'        // Base scanner
@@ -180,7 +179,12 @@ export default class MarkdownParser
 				var newlineIndex = tokenIndex
 				while(++newlineIndex < this.tokenArray.length-1 && !(this.tokenArray[newlineIndex].token == MarkdownTokenScannerNewline.getToken() && this.tokenArray[newlineIndex].length >= 2));
 
-				var paragraphElement = MarkdownParserElement.createParagraphElement(this.createElementContent(this.tokenArray.slice(tokenIndex, newlineIndex)));
+				var paragraphContent = this.createElementContent(this.tokenArray.slice(tokenIndex, newlineIndex));
+				var paragraphElement;
+				if(newlineIndex-tokenIndex < 2)
+					paragraphElement = MarkdownParserElement.createParagraphElement([paragraphContent]);
+				else
+					paragraphElement = MarkdownParserElement.createParagraphElement(paragraphContent);
 				this.elementArray = this.elementArray.concat(paragraphElement);
 				tokenIndex = newlineIndex;
 			}

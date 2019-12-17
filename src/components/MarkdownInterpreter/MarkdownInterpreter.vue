@@ -1,12 +1,16 @@
 <template>
 	<div class="md-container">
-
+		<markdown-element v-for="(element, index) in elements"
+							:key="index"
+							:element="element"
+		/>
 	</div>
 </template>
 
 <script>
 	import axios from 'axios'
 	import MarkdownParser from './MarkdownParser'
+	import MarkdownElement from './MarkdownElement.vue';
 
 	const parser = new MarkdownParser();
 
@@ -19,6 +23,7 @@
 		},
 		data () {
 			return {
+				elements: []
 			}
 		},
 		mounted() {
@@ -26,7 +31,7 @@
 				url: this.src,
 				method: 'GET'
 			}).then((response) => {
-				this.parse(response.data);
+				this.elements = this.parse(response.data);
 			}).catch((error) => {
 				console.log(error);
 			});
@@ -45,6 +50,9 @@
 				parser.logElements();
 				return parser.getElements();
 			}
+		},
+		components: {
+			'markdown-element': MarkdownElement
 		}
 	}
 </script>

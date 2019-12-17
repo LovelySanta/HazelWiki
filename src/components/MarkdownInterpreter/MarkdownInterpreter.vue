@@ -1,6 +1,9 @@
 <template>
 	<div class="md-container">
-		<markdown-element v-for="(element, index) in elements" :key="index" :element="element"/>
+		<markdown-element v-for="(element, index) in elements"
+							:key="index"
+							:element="element"
+		/>
 	</div>
 </template>
 

@@ -1,10 +1,10 @@
 <template>
-	<b>
+	<code>
 		<markdown-element v-for="(contentElement, contentIndex) in element.content"
 							:key="contentIndex"
 							:element="contentElement"
 		/>
-	</b>
+	</code>
 </template>
 
 <script>

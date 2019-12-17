@@ -1,11 +1,14 @@
 <template>
 	<span>
-		<markdown-header    v-if="element.token === '#'"   :element="element"/>
-		<markdown-paragraph v-if="element.token === 'p'"   :element="element"/>
-		<markdown-newline   v-if="element.token === '\n'"  :element="element"/>
-		<markdown-text      v-if="element.token === 'TXT'" :element="element"/>
-		<markdown-bold      v-if="element.token === '**'"  :element="element"/>
-		<markdown-italic    v-if="element.token === '*'"   :element="element"/>
+		<markdown-header    v-if="element.token === '#'"     :element="element"/>
+		<markdown-paragraph v-if="element.token === 'p'"     :element="element"/>
+		<markdown-newline   v-if="element.token === '\n'"    :element="element"/>
+		<markdown-text      v-if="element.token === 'TXT'"   :element="element"/>
+		<markdown-bold      v-if="element.token === '**'"    :element="element"/>
+		<markdown-italic    v-if="element.token === '*'"     :element="element"/>
+		<markdown-code      v-if="element.token === '`'"     :element="element"/>
+		<markdown-link      v-if="element.token === '[]()'"  :element="element"/>
+		<markdown-image     v-if="element.token === '![]()'" :element="element"/>
 	</span>
 </template>
 
@@ -16,6 +19,9 @@
 	import MarkdownElementText      from "./MarkdownElementText.vue";
 	import MarkdownElementBold      from "./MarkdownElementBold.vue";
 	import MarkdownElementItalic    from "./MarkdownElementItalic.vue";
+	import MarkdownElementCode      from "./MarkdownElementCode.vue";
+	import MarkdownElementLink      from "./MarkdownElementLink.vue";
+	import MarkdownElementImage     from "./MarkdownElementImage.vue";
 
 	export default {
 		props: {
@@ -31,6 +37,9 @@
 			'markdown-text'      : MarkdownElementText,
 			'markdown-bold'      : MarkdownElementBold,
 			'markdown-italic'    : MarkdownElementItalic,
+			'markdown-code'      : MarkdownElementCode,
+			'markdown-link'      : MarkdownElementLink,
+			'markdown-image'     : MarkdownElementImage,
 		}
 	}
 </script>

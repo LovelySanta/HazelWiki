@@ -53,11 +53,8 @@
 		computed: {
 			contentElements: function() {
 				if(this.element.token === '#' && this.element.content.length > 1)
-				{
 					return this.element.content.slice(1);
-				} else {
-					return [];
-				}
+				return [];
 			}
 		}
 	}

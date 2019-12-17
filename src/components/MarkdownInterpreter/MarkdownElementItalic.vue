@@ -1,8 +1,8 @@
 <template>
 	<i>
 		<markdown-element v-for="(contentElement, contentIndex) in element.content"
-					:key="contentIndex"
-					:element="contentElement"
+							:key="contentIndex"
+							:element="contentElement"
 		/>
 	</i>
 </template>

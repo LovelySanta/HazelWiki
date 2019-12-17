@@ -15,24 +15,20 @@
 		},
 		computed: {
 			contentLanguage: function() {
-				if(this.element.token === '```' && this.element.content.length > 1 && this.element.content[0].token === 'TXT')
-					return this.element.content[0].content;
+				if(this.element.token === '```')
+					return this.element.content[0];
 				return "";
-			},
-			contentElements: function() {
-				if(this.element.token === '```' && this.element.content.length > 1)
-					return this.element.content.slice(1);
-				return [];
 			},
 			contentString: function() {
 				var content = ""
-				for(var i = 0; i < this.contentElements.length; i++)
-				{
-					if(this.contentElements[i].token === '\n')
-						content = content.concat('\n');
-					else
-						content = content.concat(this.contentElements[i].content);
-				}
+				if(this.element.token === '```' && this.element.content.length > 1)
+					for(var i = 1; i < this.element.content.length; i++)
+					{
+						if(this.element.content[i].token === '\n')
+							content = content.concat('\n');
+						else
+							content = content.concat(this.element.content[i].content);
+					}
 				return content;
 			}
 		}

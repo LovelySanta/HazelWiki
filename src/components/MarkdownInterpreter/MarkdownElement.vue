@@ -1,15 +1,7 @@
 <template>
 	<span>
-		<markdown-header    v-if="element.token === '#'"     :element="element"/>
-		<markdown-paragraph v-if="element.token === 'p'"     :element="element"/>
-		<markdown-newline   v-if="element.token === '\n'"    :element="element"/>
-		<markdown-text      v-if="element.token === 'TXT'"   :element="element"/>
-		<markdown-bold      v-if="element.token === '**'"    :element="element"/>
-		<markdown-italic    v-if="element.token === '*'"     :element="element"/>
-		<markdown-code      v-if="element.token === '`'"     :element="element"/>
-		<markdown-codeblock v-if="element.token === '```'"   :element="element"/>
-		<markdown-link      v-if="element.token === '[]()'"  :element="element"/>
-		<markdown-image     v-if="element.token === '![]()'" :element="element"/>
+		<!-- These must be on one line, otherwise it messes with code sections -->
+		<md-h :element="element"/><md-p :element="element"/><md-nl :element="element"/><md-txt :element="element"/><md-b :element="element"/><md-i :element="element"/><md-c :element="element"/><md-cb :element="element"/><md-l :element="element"/><md-img :element="element"/>
 	</span>
 </template>
 
@@ -33,16 +25,16 @@
 			}
 		},
 		components: {
-			'markdown-header'    : MarkdownElementHeader,
-			'markdown-paragraph' : MarkdownElementParagraph,
-			'markdown-newline'   : MarkdownElementNewline,
-			'markdown-text'      : MarkdownElementText,
-			'markdown-bold'      : MarkdownElementBold,
-			'markdown-italic'    : MarkdownElementItalic,
-			'markdown-code'      : MarkdownElementCode,
-			'markdown-codeblock' : MarkdownElementCodeblock,
-			'markdown-link'      : MarkdownElementLink,
-			'markdown-image'     : MarkdownElementImage,
+			'md-h'   : MarkdownElementHeader,
+			'md-p'   : MarkdownElementParagraph,
+			'md-nl'  : MarkdownElementNewline,
+			'md-txt' : MarkdownElementText,
+			'md-b'   : MarkdownElementBold,
+			'md-i'   : MarkdownElementItalic,
+			'md-c'   : MarkdownElementCode,
+			'md-cb'  : MarkdownElementCodeblock,
+			'md-l'   : MarkdownElementLink,
+			'md-img' : MarkdownElementImage,
 		}
 	}
 </script>

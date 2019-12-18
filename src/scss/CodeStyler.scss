@@ -1,0 +1,13 @@
+@import "./global.scss";
+
+$CodeStyler_font-family: $Global_mono-font-family;
+$CodeStyler_font-size: 14px;
+$CodeStyler_font-weight: 400;
+
+$CodeStyler_line-height: $CodeStyler_font-size;
+$CodeStyler_tab-size: 4;
+
+$CodeStyler_background: #f4f4f4;
+$CodeStyler_border: #ddd;
+$CodeStyler_border-highlight: #f36d33;
+$CodeStyler_color: #666;

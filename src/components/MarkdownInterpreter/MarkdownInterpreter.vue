@@ -68,5 +68,6 @@
 		font-weight: $MarkdownInterpreter_font-weight;
 
 		line-height: $MarkdownInterpreter_line-height;
+		vertical-align: center;
 	}
 </style>

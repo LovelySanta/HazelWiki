@@ -23,8 +23,7 @@ export default class MarkdownTokenizer {
 		// Uncompiles an array of tokens back to the source and some post processing
 		var src = this.untokenizeRecursive(tokenArray);
 
-		src = src.replace(/\n\n/g, '\n');
-
+		//src = src.replace(/\n\n/g, '\n');
 		return src;
 	}
 

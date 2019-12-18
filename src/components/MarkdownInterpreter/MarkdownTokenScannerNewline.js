@@ -30,7 +30,7 @@ export default class MarkdownTokenScannerNewline extends MarkdownTokenScanner
 	unscan(token)
 	{
 		if (token.token == this.token)
-			return this.token.concat(this.token);
+			return this.token.concat(this.token.repeat(token.length-1));
 		return '';
 	}
 };

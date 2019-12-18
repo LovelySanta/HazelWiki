@@ -1,5 +1,5 @@
 <template>
-	<span>{{ element.content }}</span>
+	<span v-if="element.token === 'TXT'">{{ element.content }}</span>
 </template>
 
 <script>

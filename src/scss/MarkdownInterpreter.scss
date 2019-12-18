@@ -1,8 +1,9 @@
-@import "./global.scss";
+@import "./Global.scss";
+@import "./CodeStyler.scss";
 
 // General markdown
 $MarkdownInterpreter_color: #24292e;
-$MarkdownInterpreter_font-family: $Global_font_family;
+$MarkdownInterpreter_font-family: $Global_font-family;
 $MarkdownInterpreter_font-size: 14px;
 $MarkdownInterpreter_font-weight: normal;
 $MarkdownInterpreter_line-height: 1.5;
@@ -14,7 +15,7 @@ $MarkdownInterpreter_strong_font-weight: 600;
 $MarkdownInterpreter_p_margin-top: 0px;
 $MarkdownInterpreter_p_margin-bottom: 16px;
 
-// Header specific
+// Header
 $MarkdownInterpreter_h_margin-top: 24px;
 $MarkdownInterpreter_h_margin-bottom: $MarkdownInterpreter_p_margin-bottom;
 $MarkdownInterpreter_h_font-weight: $MarkdownInterpreter_strong_font-weight;
@@ -30,3 +31,12 @@ $MarkdownInterpreter_h5_size: 0.875em;
 $MarkdownInterpreter_h6_size: 0.850em;
 
 $MarkdownInterpreter_h6_color: #6a737d;
+
+// Code
+$MarkdownInterpreter_code_font-family: $CodeStyler_font-family;
+$MarkdownInterpreter_code_font-size: $MarkdownInterpreter_font-size;
+$MarkdownInterpreter_font-weight: $CodeStyler_font-weight;
+
+$MarkdownInterpreter_code_background: $CodeStyler_background;
+$MarkdownInterpreter_code_border: $CodeStyler_border;
+$MarkdownInterpreter_code_color: $CodeStyler_color;

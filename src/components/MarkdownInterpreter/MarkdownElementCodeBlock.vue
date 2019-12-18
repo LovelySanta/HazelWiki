@@ -1,17 +1,16 @@
 <template>
-	<pre><code>{{ contentString }}</code></pre>
+	<code-styler v-if="element.token === '```'" :src="contentString" :language="contentLanguage" />
 </template>
 
 <script>
+	import CodeStyler from "../CodeStyler/CodeStyler.vue"
+
 	export default {
 		props: {
 			element: {
 				type: Object,
 				required: true
 			}
-		},
-		components: {
-			'markdown-element' : () => import('./MarkdownElement.vue') // Recursive dependency
 		},
 		computed: {
 			contentLanguage: function() {
@@ -25,12 +24,15 @@
 					for(var i = 1; i < this.element.content.length; i++)
 					{
 						if(this.element.content[i].token === '\n')
-							content = content.concat('\n');
+							content = content.concat('\n'.repeat(this.element.content[i].content[0]));
 						else
 							content = content.concat(this.element.content[i].content);
 					}
 				return content;
 			}
+		},
+		components: {
+			'code-styler': CodeStyler
 		}
 	}
 </script>

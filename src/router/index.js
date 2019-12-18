@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from './../views/Home.vue'
-import About from './../views/About.vue'
+import BasicPage from './../views/BasicPage.vue'
+import Testpage from './../views/Testpage.vue'
 import PageNotFound from './../views/PageNotFound.vue'
 
 Vue.use(Router)
@@ -15,12 +15,79 @@ export default new Router({
 			component: PageNotFound
 		},
 		{
+			path: '/testpage',
+			component: Testpage
+		},
+
+		/********************************************************
+		* BASICS
+		********************************************************/
+		{
 			path: '/',
-			component: Home
+			component: BasicPage,
+			props: {
+				src: "./static/content/Home.md"
+			}
 		},
 		{
-			path: '/about',
-			component: About
-		}
+			path: '/Features',
+			component: BasicPage,
+			props: {
+				src: "./static/content/FutureFeatures.md"
+			}
+		},
+		{
+			path: '/GettingStarted',
+			component: BasicPage,
+			props: {
+				src: "./static/content/GettingStarted.md"
+			}
+		},
+		{
+			path: '/SystemRequirements',
+			component: BasicPage,
+			props: {
+				src: "./static/content/SystemRequirements.md"
+			}
+		},
+		{
+			path: '/BuildingHazel',
+			component: BasicPage,
+			props: {
+				src: "./static/content/BuildingHazel.md"
+			}
+		},
+		{
+			path: '/FirstProject',
+			component: BasicPage,
+			props: {
+				src: "./static/content/FirstProject.md"
+			}
+		},
+
+		/********************************************************
+		* ENGINE
+		********************************************************/
+		{
+			path: '/Engine/Benchmarking',
+			component: BasicPage,
+			props: {
+				src: "./static/content/Benchmarking.md"
+			}
+		},
+		{
+			path: '/Engine/LayerSystem',
+			component: BasicPage,
+			props: {
+				src: "./static/content/LayerSystem.md"
+			}
+		},
+		{
+			path: '/Engine/EventSystem',
+			component: BasicPage,
+			props: {
+				src: "./static/content/EventSystem.md"
+			}
+		},
 	]
 })

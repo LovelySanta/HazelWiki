@@ -6,38 +6,28 @@
 		"label": "Basics",
 		"icon": "info",
 		"links": [
-			{
-				"label": "Home",
-				"to": "/"
-			},
-			{
-				"label": "About",
-				"to": "/About"
-			}
+			{ "to": "/", 					"label": "Home"					},
+			{ "to": "/testpage",			"label": "Testpage"				},
+			{ "to": "/Features",			"label": "Features"				},
+			{ "to": "/GettingStarted",		"label": "Getting started"		},
+			{ "to": "/SystemRequirements",	"label": "System requirements"	},
+			{ "to": "/BuildingHazel",		"label": "Building Hazel"		},
+			{ "to": "/FirstProject",		"label": "First project"		}
 		]
 	},
 	{
-		"label": "API",
+		"label": "Engine",
 		"icon": "menu_book",
 		"links": [
-			{
-				"label": "Some link",
-				"to": "#"
-			},
-			{
-				"label": "Another link",
-				"to": "#"
-			}
+			{ "to": "/Engine/Benchmarking",		"label": "Benchmarking"		},
+			{ "to": "/Engine/LayerSystem",		"label": "Layer system"		},
+			{ "to": "/Engine/EventSystem",		"label": "Event system"		}
 		]
 	},
 	{
 		"label": "Usefull links",
 		"links": [
-			{
-				"label": "Forum",
-				"icon": "question_answer",
-				"to": "#"
-			}
+			{ "to": "#",	"label": "Forum",	"icon": "question_answer"	}
 		]
 	}
 ]

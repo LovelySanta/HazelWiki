@@ -36,6 +36,16 @@
 				console.log(error);
 			});
 		},
+		beforeUpdate() {
+			axios({
+				url: this.src,
+				method: 'GET'
+			}).then((response) => {
+				this.elements = this.parse(response.data);
+			}).catch((error) => {
+				console.log(error);
+			});
+		},
 		methods: {
 			parse: (src) => {
 				parser.setSrc(src);

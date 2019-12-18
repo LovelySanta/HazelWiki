@@ -9,15 +9,6 @@
 	import MarkdownInterpreter from '@/components/MarkdownInterpreter/MarkdownInterpreter.vue';
 
 	export default {
-		data() {
-			return {
-			}
-		},
-		methods: {
-			toggleNavbar() {
-				EventBus.$emit('navbar-toggleVisibile');
-			}
-		},
 		components: {
 			'markdown-page': MarkdownInterpreter,
 		}

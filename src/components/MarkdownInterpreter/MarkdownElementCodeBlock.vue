@@ -1,5 +1,5 @@
 <template>
-	<code-styler v-if="element.token === '```'" :src="contentString" :language="contentLanguage" />
+	<code-styler :src="contentString" :language="contentLanguage" />
 </template>
 
 <script>

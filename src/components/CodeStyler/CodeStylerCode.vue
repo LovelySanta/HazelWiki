@@ -8,6 +8,11 @@
 			src: {
 				type: String,
 				required: true
+			},
+			language: {
+				type: String,
+				required: false,
+				default: ""
 			}
 		}
 	}

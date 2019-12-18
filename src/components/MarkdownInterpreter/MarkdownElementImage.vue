@@ -1,5 +1,5 @@
 <template>
-	<img v-if="element.token === '![]()'" :src="link" :alt="txt" />
+	<img :src="link" :alt="txt" />
 </template>
 
 <script>

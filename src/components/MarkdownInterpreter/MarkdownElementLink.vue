@@ -1,5 +1,5 @@
 <template>
-	<a v-if="element.token === '[]()'" :href="link">
+	<a :href="link">
 		<markdown-element v-for="(contentElement, contentIndex) in contentElements"
 							:key="contentIndex"
 							:element="contentElement"

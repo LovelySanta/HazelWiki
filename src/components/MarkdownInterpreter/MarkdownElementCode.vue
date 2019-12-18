@@ -1,5 +1,5 @@
 <template>
-	<code v-if="element.token === '`'">
+	<code>
 		<markdown-element v-for="(contentElement, contentIndex) in element.content"
 							:key="contentIndex"
 							:element="contentElement"

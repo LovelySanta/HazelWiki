@@ -1,5 +1,5 @@
 <template>
-	<br v-if="element.token === '\n'" :v-repeat="element.content[0]">
+	<br :v-repeat="element.content[0]">
 </template>
 
 <script>

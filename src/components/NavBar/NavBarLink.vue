@@ -35,7 +35,7 @@
 		methods: {
 			closeNav() {
 				EventBus.$emit('navbar-closeVisibile');
-                EventBus.$emit('overlay-closeVisibile');
+				EventBus.$emit('overlay-closeVisibile');
 			}
 		}
 	}

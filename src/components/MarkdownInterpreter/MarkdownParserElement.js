@@ -17,7 +17,9 @@ export default class MarkdownParserElement
 
 	static createParagraphElement(contentElements)
 	{
-		return new MarkdownParserElement('p', contentElements);
+		if(contentElements instanceof Array)
+			return new MarkdownParserElement('p', contentElements);
+		return new MarkdownParserElement('p', [contentElements]);
 	}
 
 	static createTextElement(content)

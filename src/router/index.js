@@ -69,21 +69,21 @@ export default new Router({
 		* ENGINE
 		********************************************************/
 		{
-			path: '/Engine/Benchmarking',
+			path: '/Benchmarking',
 			component: BasicPage,
 			props: {
 				src: "./static/content/Benchmarking.md"
 			}
 		},
 		{
-			path: '/Engine/LayerSystem',
+			path: '/LayerSystem',
 			component: BasicPage,
 			props: {
 				src: "./static/content/LayerSystem.md"
 			}
 		},
 		{
-			path: '/Engine/EventSystem',
+			path: '/EventSystem',
 			component: BasicPage,
 			props: {
 				src: "./static/content/EventSystem.md"

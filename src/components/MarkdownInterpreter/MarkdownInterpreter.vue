@@ -23,41 +23,43 @@
 		},
 		data () {
 			return {
-				elements: []
+				text: ""
 			}
 		},
 		mounted() {
+			console.log("mounted")
 			axios({
 				url: this.src,
 				method: 'GET'
 			}).then((response) => {
-				this.elements = this.parse(response.data);
+				this.text = response.data
 			}).catch((error) => {
 				console.log(error);
 			});
 		},
-		beforeUpdate() {
-			axios({
-				url: this.src,
-				method: 'GET'
-			}).then((response) => {
-				this.elements = this.parse(response.data);
-			}).catch((error) => {
-				console.log(error);
-			});
+		watch: {
+			src(newValue) {
+				console.log("watcher")
+				axios({
+					url: this.src,
+					method: 'GET'
+				}).then((response) => {
+					this.text = response.data
+				}).catch((error) => {
+					console.log(error);
+				});
+			}
 		},
-		methods: {
-			parse: (src) => {
-				parser.setSrc(src);
+		computed: {
+			elements: function() {
+				parser.setSrc(this.text);
 
 				// Find tokens in the source
-				parser.createTokens(src);
+				parser.createTokens();
 				parser.cleanupTokens();
-				//parser.logTokens();
 
 				// Create elements from tokens
 				parser.createElements();
-				//parser.logElements();
 				return parser.getElements();
 			}
 		},

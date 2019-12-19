@@ -19,9 +19,9 @@
 		"label": "Engine",
 		"icon": "menu_book",
 		"links": [
-			{ "to": "/Engine/Benchmarking",		"label": "Benchmarking"		},
-			{ "to": "/Engine/LayerSystem",		"label": "Layer system"		},
-			{ "to": "/Engine/EventSystem",		"label": "Event system"		}
+			{ "to": "/Benchmarking",		"label": "Benchmarking"		},
+			{ "to": "/LayerSystem",		"label": "Layer system"		},
+			{ "to": "/EventSystem",		"label": "Event system"		}
 		]
 	},
 	{

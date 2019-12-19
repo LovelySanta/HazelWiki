@@ -1,3 +1,4 @@
+import MarkdownToken from './MarkdownToken'
 import MarkdownTokenizer from './MarkdownTokenizer'
 
 import MarkdownTokenScanner        from './MarkdownTokenScanner'        // Base scanner
@@ -182,11 +183,7 @@ export default class MarkdownParser
 				while(++newlineIndex < this.tokenArray.length-1 && !(this.tokenArray[newlineIndex].token == MarkdownTokenScannerNewline.getToken() && this.tokenArray[newlineIndex].length >= 2));
 
 				var paragraphContent = this.createElementContent(this.tokenArray.slice(tokenIndex, newlineIndex));
-				var paragraphElement;
-				if(newlineIndex-tokenIndex < 2)
-					paragraphElement = MarkdownParserElement.createParagraphElement([paragraphContent]);
-				else
-					paragraphElement = MarkdownParserElement.createParagraphElement(paragraphContent);
+				var paragraphElement = MarkdownParserElement.createParagraphElement(paragraphContent);
 				this.elementArray = this.elementArray.concat(paragraphElement);
 				tokenIndex = newlineIndex;
 			}
@@ -217,6 +214,8 @@ export default class MarkdownParser
 
 	createElementContent(tokenArray)
 	{
+		if(tokenArray.length == 0)
+			console.warn("Parser received an empty array!")
 		var token = tokenArray[0];
 
 		// Newline
@@ -262,11 +261,19 @@ export default class MarkdownParser
 		{
 			var captionTokenIndex = 0;
 			while(++captionTokenIndex < tokenArray.length && tokenArray[captionTokenIndex].token != token.token);
-			var captionElement = this.createElementContent(tokenArray.slice(1, captionTokenIndex))
+			var captionElement;
+			if(captionTokenIndex > 1)
+				captionElement = this.createElementContent(tokenArray.slice(1, captionTokenIndex));
+			else
+				captionElement = this.createElementContent([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
 
 			var linkTokenIndex = captionTokenIndex;
 			while(++linkTokenIndex < tokenArray.length && tokenArray[linkTokenIndex].token != token.token);
-			var linkElement = this.createElementContent(tokenArray.slice(captionTokenIndex+1, linkTokenIndex))
+			var linkElement;
+			if(linkTokenIndex-captionTokenIndex > 1)
+				linkElement = this.createElementContent(tokenArray.slice(captionTokenIndex+1, linkTokenIndex));
+			else
+				linkElement = this.createElementContent([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
 
 			var imageElement = MarkdownParserElement.createImageElement(linkElement, captionElement)
 			if (linkTokenIndex == tokenArray.length-1) { return imageElement; }
@@ -278,14 +285,21 @@ export default class MarkdownParser
 		{
 			var captionTokenIndex = 0;
 			while(++captionTokenIndex < tokenArray.length && tokenArray[captionTokenIndex].token != token.token);
-			var captionElements = this.createElementContent(tokenArray.slice(1, captionTokenIndex))
-			if(captionElements.length < 2) { captionElements = [captionElements]; }
+			var captionElement;
+			if(captionTokenIndex > 1)
+				captionElement = this.createElementContent(tokenArray.slice(1, captionTokenIndex));
+			else
+				captionElement = this.createElementContent([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
 
 			var linkTokenIndex = captionTokenIndex;
 			while(++linkTokenIndex < tokenArray.length && tokenArray[linkTokenIndex].token != token.token);
-			var linkElement = this.createElementContent(tokenArray.slice(captionTokenIndex+1, linkTokenIndex))
+			var linkElement;
+			if(linkTokenIndex-captionTokenIndex>1)
+				linkElement = this.createElementContent(tokenArray.slice(captionTokenIndex+1, linkTokenIndex));
+			else
+				linkElement = this.createElementContent([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
 
-			var linkingElement = MarkdownParserElement.createLinkElement(linkElement, captionElements)
+			var linkingElement = MarkdownParserElement.createLinkElement(linkElement, captionElement)
 			if (linkTokenIndex == tokenArray.length-1) { return linkingElement; }
 			return [linkingElement].concat(this.createElementContent(tokenArray.slice(linkTokenIndex+1)));
 		}

@@ -5,11 +5,26 @@ import BasicPage from './../views/BasicPage.vue'
 import Testpage from './../views/Testpage.vue'
 import PageNotFound from './../views/PageNotFound.vue'
 
+const navBarLayout = require('@/assets/NavBarLayout.json');
+
 Vue.use(Router)
 
-export default new Router({
-	mode: 'history',
-	routes: [
+function createRoutes() {
+	function createRouteElement(routeData) {
+		if (routeData.type == "markdown")
+			return {
+				path: routeData.to,
+				component: BasicPage,
+				props: {
+					src: "./static/content/".concat(routeData.src)
+				}
+			};
+
+		return null; // return empty if not specified
+	}
+
+	// Start with the default routes
+	var routes = [
 		{
 			path: "*",
 			component: PageNotFound
@@ -18,76 +33,25 @@ export default new Router({
 			path: '/testpage',
 			component: Testpage
 		},
-
-		/********************************************************
-		* BASICS
-		********************************************************/
-		{
-			path: '/',
-			component: BasicPage,
-			props: {
-				src: "./static/content/Home.md"
-			}
-		},
-		{
-			path: '/Features',
-			component: BasicPage,
-			props: {
-				src: "./static/content/FutureFeatures.md"
-			}
-		},
-		{
-			path: '/GettingStarted',
-			component: BasicPage,
-			props: {
-				src: "./static/content/GettingStarted.md"
-			}
-		},
-		{
-			path: '/SystemRequirements',
-			component: BasicPage,
-			props: {
-				src: "./static/content/SystemRequirements.md"
-			}
-		},
-		{
-			path: '/BuildingHazel',
-			component: BasicPage,
-			props: {
-				src: "./static/content/BuildingHazel.md"
-			}
-		},
-		{
-			path: '/FirstProject',
-			component: BasicPage,
-			props: {
-				src: "./static/content/FirstProject.md"
-			}
-		},
-
-		/********************************************************
-		* ENGINE
-		********************************************************/
-		{
-			path: '/Benchmarking',
-			component: BasicPage,
-			props: {
-				src: "./static/content/Benchmarking.md"
-			}
-		},
-		{
-			path: '/LayerSystem',
-			component: BasicPage,
-			props: {
-				src: "./static/content/LayerSystem.md"
-			}
-		},
-		{
-			path: '/EventSystem',
-			component: BasicPage,
-			props: {
-				src: "./static/content/EventSystem.md"
-			}
-		},
 	]
+
+	// Add the markdown content files
+	for(var sectionIndex=0; sectionIndex < navBarLayout.length; sectionIndex++)
+	{
+		var navSectionLayout = navBarLayout[sectionIndex].links;
+		if(navSectionLayout)
+			for(var linkIndex=0; linkIndex < navSectionLayout.length; linkIndex++)
+			{
+				var routeElement = createRouteElement(navSectionLayout[linkIndex]);
+				if (routeElement)
+					routes.push(routeElement)
+			}
+	}
+
+	return routes;
+}
+
+export default new Router({
+	mode: 'history',
+	routes: createRoutes()
 })

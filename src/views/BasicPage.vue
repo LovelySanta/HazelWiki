@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<markdown-page :src="src" />
+		<markdown-interpreter :src="src" />
 	</div>
 </template>
 
@@ -15,7 +15,7 @@
 			}
 		},
 		components: {
-			'markdown-page': MarkdownInterpreter,
+			'markdown-interpreter': MarkdownInterpreter,
 		}
 	}
 </script>

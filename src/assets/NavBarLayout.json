@@ -6,22 +6,22 @@
 		"label": "Basics",
 		"icon": "info",
 		"links": [
-			{ "to": "/", 					"label": "Home"					},
-			{ "to": "/testpage",			"label": "Testpage"				},
-			{ "to": "/Features",			"label": "Features"				},
-			{ "to": "/GettingStarted",		"label": "Getting started"		},
-			{ "to": "/SystemRequirements",	"label": "System requirements"	},
-			{ "to": "/BuildingHazel",		"label": "Building Hazel"		},
-			{ "to": "/FirstProject",		"label": "First project"		}
+			{ "to": "/"                  , "label": "Home"               , "type": "markdown", "src": "Home.md"               },
+			{ "to": "/testpage"          , "label": "Testpage"           , "type": "markdown", "src": "Testfile.md"           },
+			{ "to": "/Features"          , "label": "Features"           , "type": "markdown", "src": "FutureFeatures.md"     },
+			{ "to": "/GettingStarted"    , "label": "Getting started"    , "type": "markdown", "src": "GettingStarted.md"     },
+			{ "to": "/SystemRequirements", "label": "System requirements", "type": "markdown", "src": "SystemRequirements.md" },
+			{ "to": "/BuildingHazel"     , "label": "Building Hazel"     , "type": "markdown", "src": "BuildingHazel.md"      },
+			{ "to": "/FirstProject"      , "label": "First project"      , "type": "markdown", "src": "FirstProject.md"       }
 		]
 	},
 	{
 		"label": "Engine",
 		"icon": "menu_book",
 		"links": [
-			{ "to": "/Benchmarking",		"label": "Benchmarking"		},
-			{ "to": "/LayerSystem",		"label": "Layer system"		},
-			{ "to": "/EventSystem",		"label": "Event system"		}
+			{ "to": "/Benchmarking", "label": "Benchmarking", "type": "markdown", "src": "Benchmarking.md" },
+			{ "to": "/LayerSystem" , "label": "Layer system", "type": "markdown", "src": "LayerSystem.md"  },
+			{ "to": "/EventSystem" , "label": "Event system", "type": "markdown", "src": "EventSystem.md"  }
 		]
 	},
 	{

@@ -27,7 +27,6 @@
 			}
 		},
 		mounted() {
-			console.log("mounted")
 			axios({
 				url: this.src,
 				method: 'GET'
@@ -39,7 +38,6 @@
 		},
 		watch: {
 			src(newValue) {
-				console.log("watcher")
 				axios({
 					url: this.src,
 					method: 'GET'

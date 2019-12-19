@@ -34,6 +34,8 @@ export default class MarkdownParser
 		this.src = '';
 		this.tokenArray = [];
 		this.elementArray = [];
+
+		this.insideParagraph = false
 	}
 
 	setSrc(src)
@@ -151,170 +153,230 @@ export default class MarkdownParser
 
 	isPagragraphToken(token)
 	{
-		return token.token == MarkdownTokenScanner.getToken() ||                     // Regular text
+		return (!this.insideParagraph) && (
+			token.token == MarkdownTokenScanner.getToken() ||                        // Regular text
+			token.token == MarkdownTokenScannerNewline.getToken() ||                 // Newline
 			token.token == MarkdownTokenScannerItalic.getToken() ||                  // Italic text
 			token.token == MarkdownTokenScannerBold.getToken() ||                    // Bold text
 			token.token == MarkdownTokenScannerImage.getToken().join('') ||          // Image
 			token.token == MarkdownTokenScannerLink.getToken().join('') ||           // Link
 			(token.token == MarkdownTokenScannerCode.getToken() && token.length < 3) // Inline code
+		);
 	}
 
 	createElements()
 	{
-		this.elementArray = [];
-
-		// Strips the tokens into main chunks to create into elements
-		var tokenIndex = -1;
-		while(++tokenIndex < this.tokenArray.length)
-		{
-			var token = this.tokenArray[tokenIndex];
-			if(token.token == MarkdownTokenScannerHeader.getToken()) // Header
-			{
-				var newlineIndex = tokenIndex;
-				while(++newlineIndex < this.tokenArray.length-1 && this.tokenArray[newlineIndex].token != MarkdownTokenScannerNewline.getToken());
-
-				var headerElement = MarkdownParserElement.createHeaderElement(token.length, this.createElementContent(this.tokenArray.slice(tokenIndex+1, newlineIndex)));
-				this.elementArray = this.elementArray.concat(headerElement);
-				tokenIndex = newlineIndex;
-			}
-			else if(this.isPagragraphToken(token)) // Paragraph
-			{
-				var newlineIndex = tokenIndex
-				while(++newlineIndex < this.tokenArray.length-1 && !(this.tokenArray[newlineIndex].token == MarkdownTokenScannerNewline.getToken() && this.tokenArray[newlineIndex].length >= 2));
-
-				var paragraphContent = this.createElementContent(this.tokenArray.slice(tokenIndex, newlineIndex));
-				var paragraphElement = MarkdownParserElement.createParagraphElement(paragraphContent);
-				this.elementArray = this.elementArray.concat(paragraphElement);
-				tokenIndex = newlineIndex;
-			}
-			else if(token.token == MarkdownTokenScannerCode.getToken() && token.length >= 3)
-			{
-				var codeBlockEnd = tokenIndex;
-				while(++codeBlockEnd < this.tokenArray.length-1 && this.tokenArray[codeBlockEnd].token !== token.token);
-				var codeBlockContent = this.tokenArray.slice(tokenIndex+1, codeBlockEnd)
-
-				var codeLanguage = null;
-				if(codeBlockContent[0].token == MarkdownTokenScanner.getToken()) { codeLanguage = codeBlockContent.splice(0,1)[0].content; }
-				while(codeBlockContent[0].token == MarkdownTokenScannerNewline.getToken()) { codeBlockContent.splice(0,1); }
-				while(codeBlockContent[codeBlockContent.length-1].token == MarkdownTokenScannerNewline.getToken()) { codeBlockContent.splice(-1); }
-
-				var codeBlockElement = MarkdownParserElement.createCodeBlockElement(codeLanguage, this.createElementContent(codeBlockContent));
-				this.elementArray = this.elementArray.concat(codeBlockElement);
-				tokenIndex = codeBlockEnd;
-
-				if(tokenIndex < this.tokenArray.length-1 && this.tokenArray[tokenIndex+1].token == MarkdownTokenScannerNewline.getToken()) { tokenIndex++; }
-			}
-			else
-			{
-				console.log("unhandled token:")
-				console.log(token.token)
-			}
-		}
+		if(this.tokenArray && this.tokenArray.length > 0)
+			this.elementArray = this.createElementsRecursive(this.tokenArray);
+		else
+			this.elementArray = [];
 	}
 
-	createElementContent(tokenArray)
+	createElementsRecursive(tokenArray)
 	{
 		if(tokenArray.length == 0)
-			console.warn("Parser received an empty array!")
+		{
+			console.warn("Parser received an empty array!");
+			return [];
+		}
 		var token = tokenArray[0];
+
+		// Header
+		if(token.token == MarkdownTokenScannerHeader.getToken())
+		{
+			// Find the end of the header
+			var newlineTokenIndex = 0;
+			while(++newlineTokenIndex < tokenArray.length-1 && tokenArray[newlineTokenIndex].token != MarkdownTokenScannerNewline.getToken());
+
+			// Create the header element
+			this.insideParagraph = true; // a header content can't be a paragraph
+			var headerElement = MarkdownParserElement.createHeaderElement(token.length, this.createElementsRecursive(tokenArray.slice(1, newlineTokenIndex)));
+			this.insideParagraph = false;
+
+			// Return the header
+			if (newlineTokenIndex == tokenArray.length-1) { return headerElement; }
+			return [headerElement].concat(this.createElementsRecursive(tokenArray.slice(newlineTokenIndex+1)));
+		}
+
+		// Code block
+		if(token.token == MarkdownTokenScannerCode.getToken() && token.length >= 3)
+		{
+			// Find the end of the code block
+			var codeBlockEnd = 0;
+			while(++codeBlockEnd < tokenArray.length-1 && tokenArray[codeBlockEnd].token !== token.token);
+			var codeBlockContent = tokenArray.slice(1, codeBlockEnd)
+
+			// Extract the code language
+			var codeLanguage = null;
+			if(codeBlockContent[0].token == MarkdownTokenScanner.getToken()) { codeLanguage = codeBlockContent.splice(0,1)[0].content; }
+			while(codeBlockContent[0].token == MarkdownTokenScannerNewline.getToken()) { codeBlockContent.splice(0,1); }
+			while(codeBlockContent[codeBlockContent.length-1].token == MarkdownTokenScannerNewline.getToken()) { codeBlockContent.splice(-1); }
+
+			// Create the code block element
+			this.insideParagraph = true; // a code block can't be a paragraph
+			var codeBlockElement = MarkdownParserElement.createCodeBlockElement(codeLanguage, this.createElementsRecursive(codeBlockContent));
+			this.insideParagraph = false;
+
+			// Return the code block element
+			if (codeBlockEnd == tokenArray.length-1) { return codeBlockElement; }
+			return [codeBlockElement].concat(this.createElementsRecursive(tokenArray.slice(codeBlockEnd+1)));
+		}
+
+		// Paragraph
+		if(this.isPagragraphToken(token))
+		{
+			// Remove leading newline tokens first
+			var paragraphBeginIndex = -1
+			while(++paragraphBeginIndex < tokenArray.length-1 && tokenArray[paragraphBeginIndex].token == MarkdownTokenScannerNewline.getToken());
+
+			// Find the end of the current paragraph
+			var newlineTokenIndex = paragraphBeginIndex;
+			while(++newlineTokenIndex < tokenArray.length-1 && !(tokenArray[newlineTokenIndex].token == MarkdownTokenScannerNewline.getToken() && tokenArray[newlineTokenIndex].length >= 2));
+
+			// Create the paragraph element
+			this.insideParagraph = true;
+			var paragraphElement = MarkdownParserElement.createParagraphElement(this.createElementsRecursive(tokenArray.slice(paragraphBeginIndex, newlineTokenIndex)));
+			this.insideParagraph = false;
+
+			// Return the paragraph element
+			if (newlineTokenIndex >= tokenArray.length - 1) { return paragraphElement; }
+			return [paragraphElement].concat(this.createElementsRecursive(tokenArray.slice(newlineTokenIndex+1)));
+		}
 
 		// Newline
 		if(token.token == MarkdownTokenScannerNewline.getToken())
 		{
+			// Create the newline element
 			var element = MarkdownParserElement.createNewlineElement(token.length)
+
+			// Return the newline element
 			if (tokenArray.length == 1) { return element; }
-			return [element].concat(this.createElementContent(tokenArray.slice(1)));
+			return [element].concat(this.createElementsRecursive(tokenArray.slice(1)));
 		}
 
 		// Regular text
 		if(token.token == MarkdownTokenScanner.getToken())
 		{
+			// Create the text element
 			var element = MarkdownParserElement.createTextElement(token.content);
+
+			// Return the text element
 			if (tokenArray.length == 1) { return element; }
-			return [element].concat(this.createElementContent(tokenArray.slice(1)));
+			return [element].concat(this.createElementsRecursive(tokenArray.slice(1)));
 		}
 
 		// Bold text
 		if(token.token == MarkdownTokenScannerBold.getToken())
 		{
+			// Find the end of the bold element
 			var tokenIndex = 0;
 			while(++tokenIndex < tokenArray.length && tokenArray[tokenIndex].token != token.token);
 
-			var boldElement = MarkdownParserElement.createBoldElement(this.createElementContent(tokenArray.slice(1, tokenIndex)))
+			// Create the bold element
+			var boldElement = MarkdownParserElement.createBoldElement(this.createElementsRecursive(tokenArray.slice(1, tokenIndex)))
+
+			// Return the bold element
 			if (tokenIndex == tokenArray.length-1) { return boldElement; }
-			return [boldElement].concat(this.createElementContent(tokenArray.slice(tokenIndex+1)));
+			return [boldElement].concat(this.createElementsRecursive(tokenArray.slice(tokenIndex+1)));
 		}
 
 		// Italic text
 		if(token.token == MarkdownTokenScannerItalic.getToken())
 		{
+			// Find the end of the italic element
 			var tokenIndex = 0;
 			while(++tokenIndex < tokenArray.length && tokenArray[tokenIndex].token != token.token);
 
-			var italicElement = MarkdownParserElement.createItalicElement(this.createElementContent(tokenArray.slice(1, tokenIndex)))
+			// Create the italic element
+			var italicElement = MarkdownParserElement.createItalicElement(this.createElementsRecursive(tokenArray.slice(1, tokenIndex)))
+
+			// Return the italic element
 			if (tokenIndex == tokenArray.length-1) { return italicElement; }
-			return [italicElement].concat(this.createElementContent(tokenArray.slice(tokenIndex+1)));
+			return [italicElement].concat(this.createElementsRecursive(tokenArray.slice(tokenIndex+1)));
 		}
 
 		// Image
 		if(token.token == MarkdownTokenScannerImage.getToken().join(''))
 		{
+			// Find the end of the caption element, the part between the '[]'
 			var captionTokenIndex = 0;
 			while(++captionTokenIndex < tokenArray.length && tokenArray[captionTokenIndex].token != token.token);
+
+			// Create the caption element
 			var captionElement;
 			if(captionTokenIndex > 1)
-				captionElement = this.createElementContent(tokenArray.slice(1, captionTokenIndex));
+				captionElement = this.createElementsRecursive(tokenArray.slice(1, captionTokenIndex));
 			else
-				captionElement = this.createElementContent([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
+				captionElement = this.createElementsRecursive([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
 
+			// Find the end of the source link element, the part between the '()'
 			var linkTokenIndex = captionTokenIndex;
 			while(++linkTokenIndex < tokenArray.length && tokenArray[linkTokenIndex].token != token.token);
+
+			// Create the source link element
 			var linkElement;
 			if(linkTokenIndex-captionTokenIndex > 1)
-				linkElement = this.createElementContent(tokenArray.slice(captionTokenIndex+1, linkTokenIndex));
+				linkElement = this.createElementsRecursive(tokenArray.slice(captionTokenIndex+1, linkTokenIndex));
 			else
-				linkElement = this.createElementContent([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
+				linkElement = this.createElementsRecursive([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
 
-			var imageElement = MarkdownParserElement.createImageElement(linkElement, captionElement)
+			// Create the image element
+			var imageElement = MarkdownParserElement.createImageElement(linkElement, captionElement);
+
+			// Return the image element
 			if (linkTokenIndex == tokenArray.length-1) { return imageElement; }
-			return [imageElement].concat(this.createElementContent(tokenArray.slice(linkTokenIndex+1)));
+			return [imageElement].concat(this.createElementsRecursive(tokenArray.slice(linkTokenIndex+1)));
 		}
 
 		// Link
 		if(token.token == MarkdownTokenScannerLink.getToken().join(''))
 		{
+			// Find the end of the caption element, the part between the '[]'
 			var captionTokenIndex = 0;
 			while(++captionTokenIndex < tokenArray.length && tokenArray[captionTokenIndex].token != token.token);
+
+			// Create the caption element
 			var captionElement;
 			if(captionTokenIndex > 1)
-				captionElement = this.createElementContent(tokenArray.slice(1, captionTokenIndex));
+				captionElement = this.createElementsRecursive(tokenArray.slice(1, captionTokenIndex));
 			else
-				captionElement = this.createElementContent([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
+				captionElement = this.createElementsRecursive([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
 
+			// Find the end of the source link element, the part between the '()'
 			var linkTokenIndex = captionTokenIndex;
 			while(++linkTokenIndex < tokenArray.length && tokenArray[linkTokenIndex].token != token.token);
+
+			// Create the source link element
 			var linkElement;
 			if(linkTokenIndex-captionTokenIndex>1)
-				linkElement = this.createElementContent(tokenArray.slice(captionTokenIndex+1, linkTokenIndex));
+				linkElement = this.createElementsRecursive(tokenArray.slice(captionTokenIndex+1, linkTokenIndex));
 			else
-				linkElement = this.createElementContent([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
+				linkElement = this.createElementsRecursive([new MarkdownToken(MarkdownTokenScanner.getToken(), "")]);
 
-			var linkingElement = MarkdownParserElement.createLinkElement(linkElement, captionElement)
+			// Create the link element
+			var linkingElement = MarkdownParserElement.createLinkElement(linkElement, captionElement);
+
+			// Return the link element
 			if (linkTokenIndex == tokenArray.length-1) { return linkingElement; }
-			return [linkingElement].concat(this.createElementContent(tokenArray.slice(linkTokenIndex+1)));
+			return [linkingElement].concat(this.createElementsRecursive(tokenArray.slice(linkTokenIndex+1)));
 		}
 
 		// Code
 		if(token.token == MarkdownTokenScannerCode.getToken())
 		{
+			// Find the end of the code
 			var tokenIndex = 0;
 			while(++tokenIndex < tokenArray.length && tokenArray[tokenIndex].token != token.token);
 
-			var codeElement = MarkdownParserElement.createCodeElement(this.createElementContent(tokenArray.slice(1, tokenIndex)));
+			// Create the code element
+			var codeElement = MarkdownParserElement.createCodeElement(this.createElementsRecursive(tokenArray.slice(1, tokenIndex)));
+
+			// Return the code element
 			if (tokenIndex == tokenArray.length-1) { return codeElement; }
-			return [codeElement].concat(this.createElementContent(tokenArray.slice(tokenIndex+1)));
+			return [codeElement].concat(this.createElementsRecursive(tokenArray.slice(tokenIndex+1)));
 		}
 
+		console.warn("unknown token: ".concat(token.token))
 	}
 
 	getElements() { return this.elementArray; }

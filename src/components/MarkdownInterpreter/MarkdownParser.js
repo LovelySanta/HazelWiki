@@ -2,16 +2,18 @@ import MarkdownToken from './MarkdownToken'
 import MarkdownTokenizer from './MarkdownTokenizer'
 
 import MarkdownTokenScanner        from './MarkdownTokenScanner'        // Base scanner
-import MarkdownTokenScannerNewline from './MarkdownTokenScannerNewline' // Newline scanner
 import MarkdownTokenScannerCode    from './MarkdownTokenScannerCode'    // Code scanner
+import MarkdownTokenScannerNewline from './MarkdownTokenScannerNewline' // Newline scanner
 import MarkdownTokenScannerImage   from './MarkdownTokenScannerImage'   // Image scanner
 import MarkdownTokenScannerLink    from './MarkdownTokenScannerLink'    // Link scanner
 import MarkdownTokenScannerHeader  from './MarkdownTokenScannerHeader'  // Header scanner
 import MarkdownTokenScannerList    from './MarkdownTokenScannerList'    // List scanner
+import MarkdownTokenScannerQuote   from './MarkdownTokenScannerQuote'   // Quote scanner
 import MarkdownTokenScannerBold    from './MarkdownTokenScannerBold'    // Bold scanner
 import MarkdownTokenScannerItalic  from './MarkdownTokenScannerItalic'  // Italic scanner
 
 import MarkdownParserElement from './MarkdownParserElement'
+import { cp } from 'shelljs'
 
 export default class MarkdownParser
 {
@@ -25,6 +27,7 @@ export default class MarkdownParser
 		this.tokenizer.addScanner(new MarkdownTokenScannerLink());
 		this.tokenizer.addScanner(new MarkdownTokenScannerHeader());
 		this.tokenizer.addScanner(new MarkdownTokenScannerList());
+		this.tokenizer.addScanner(new MarkdownTokenScannerQuote());
 		this.tokenizer.addScanner(new MarkdownTokenScannerBold());
 		this.tokenizer.addScanner(new MarkdownTokenScannerItalic());
 
@@ -150,7 +153,7 @@ export default class MarkdownParser
 						tokenIndex--;
 						this.tokenArray.splice(--tokenIndex, 1); // remove space token before this list token
 					}
-					else if (nextToken.token == MarkdownTokenScanner.getToken() && nextToken.content === " ")
+					else if(nextToken.token == MarkdownTokenScanner.getToken() && nextToken.content === " ")
 					{
 						this.tokenArray.splice(tokenIndex--, 1); // remove space after this list token
 					}
@@ -158,6 +161,27 @@ export default class MarkdownParser
 				else
 				{
 					// Invalid list token, unscan it
+					this.tokenArray[--tokenIndex] = new MarkdownToken(MarkdownTokenScanner.getToken(), token.token, token.token.length);
+				}
+			}
+
+			// remove invalid quote tokens + remove spaces after tokens
+			else if (token.token == MarkdownTokenScannerQuote.getToken())
+			{
+				// Check if this token is valid, if it has a valid previous token
+				var prevToken = this.tokenArray[tokenIndex-2];
+				var nextToken = this.tokenArray[tokenIndex];
+				if(prevToken.token === token.token || prevToken.token === MarkdownTokenScannerNewline.getToken())
+				{
+					// Valid token, remove spaces after it
+					if(nextToken.token == MarkdownTokenScanner.getToken() && nextToken.content === " ")
+					{
+						this.tokenArray.splice(tokenIndex--, 1); // remove space after this quote token
+					}
+				}
+				else
+				{
+					// Invalid quote token, unscan it
 					this.tokenArray[--tokenIndex] = new MarkdownToken(MarkdownTokenScanner.getToken(), token.token, token.token.length);
 				}
 			}
@@ -171,28 +195,36 @@ export default class MarkdownParser
 		while(tokenIndex < this.tokenArray.length-1)
 		{
 			var token = this.tokenArray[tokenIndex++];
-			var removeToken = false; // will remove this token
 			var nextToken = this.tokenArray[tokenIndex];
 
+			// merges text together
 			if (token.token === MarkdownTokenScanner.getToken() && nextToken.token === token.token)
 			{
 				nextToken.content = token.content.concat(nextToken.content);
 				nextToken.length += token.length;
-				removeToken = true; // merges text together
+				this.tokenArray.splice(--tokenIndex, 1);
 			}
+
+			// merges newlines together
 			else if (token.token === MarkdownTokenScannerNewline.getToken() && nextToken.token === token.token)
 			{
 				nextToken.length += token.length;
-				removeToken = true; // merges newlines together
+				this.tokenArray.splice(--tokenIndex, 1);
 			}
+
+			// merges headers together
 			else if (token.token === MarkdownTokenScannerHeader.getToken() && nextToken.token === token.token)
 			{
 				nextToken.length += token.length;
-				removeToken = true; // merges headers together
+				this.tokenArray.splice(--tokenIndex, 1);
 			}
 
-			if (removeToken)
+			// merges quotes together
+			else if (token.token == MarkdownTokenScannerQuote.getToken() && nextToken.token === token.token)
+			{
+				nextToken.length += token.length;
 				this.tokenArray.splice(--tokenIndex, 1);
+			}
 		}
 	}
 
@@ -254,9 +286,9 @@ export default class MarkdownParser
 
 			// Extract the code language
 			var codeLanguage = null;
-			if(codeBlockContent[0].token == MarkdownTokenScanner.getToken()) { codeLanguage = codeBlockContent.splice(0,1)[0].content; }
-			while(codeBlockContent[0].token == MarkdownTokenScannerNewline.getToken()) { codeBlockContent.splice(0,1); }
-			while(codeBlockContent[codeBlockContent.length-1].token == MarkdownTokenScannerNewline.getToken()) { codeBlockContent.splice(-1); }
+			if(codeBlockContent[0].token == MarkdownTokenScanner.getToken()) { codeLanguage = codeBlockContent.splice(0, 1)[0].content; }
+			while(codeBlockContent[0].token == MarkdownTokenScannerNewline.getToken()) { codeBlockContent.splice(0, 1); }
+			while(codeBlockContent[codeBlockContent.length-1].token == MarkdownTokenScannerNewline.getToken()) codeBlockContent.splice(-1);
 
 			// Create the code block element
 			this.insideParagraph = true; // a code block can't be a paragraph
@@ -268,6 +300,55 @@ export default class MarkdownParser
 			return [codeBlockElement].concat(this.createElementsRecursive(tokenArray.slice(codeBlockEnd+1)));
 		}
 
+		// Quote
+		if(token.token == MarkdownTokenScannerQuote.getToken())
+		{
+			// Find the end of the quote
+			var quoteBlockEnd = -1;
+			while(++quoteBlockEnd < tokenArray.length && tokenArray[quoteBlockEnd].token === token.token) // begin of quote line
+			{
+				while(++quoteBlockEnd < tokenArray.length && tokenArray[quoteBlockEnd].token !== MarkdownTokenScannerNewline.getToken()); // end of quote line
+				if(quoteBlockEnd < tokenArray.length && tokenArray[quoteBlockEnd].length > 1)
+				{
+					++quoteBlockEnd;
+					break;
+				}
+			}
+			var quoteBlockTokens = tokenArray.slice(0,quoteBlockEnd);
+
+			// Remove one level of quote
+			var quoteBlockTokenIndex = -1;
+			while(++quoteBlockTokenIndex < quoteBlockTokens.length)
+			{
+				if(quoteBlockTokens[quoteBlockTokenIndex].token === token.token)
+				{
+					if(quoteBlockTokens[quoteBlockTokenIndex].length > 1)
+						quoteBlockTokens[quoteBlockTokenIndex].length--; // Decreasing level by 1
+					else
+					{
+						quoteBlockTokens.splice(quoteBlockTokenIndex--, 1) // Removing lowest levels
+						if(quoteBlockTokenIndex >= 0 && quoteBlockTokenIndex < quoteBlockTokens.length - 1)
+						{
+							// Merge new line tokens
+							if(quoteBlockTokens[quoteBlockTokenIndex  ].token === MarkdownTokenScannerNewline.getToken() &&
+							   quoteBlockTokens[quoteBlockTokenIndex+1].token === MarkdownTokenScannerNewline.getToken() )
+							{
+								quoteBlockTokens[quoteBlockTokenIndex].length += quoteBlockTokens[quoteBlockTokenIndex+1].length;
+								quoteBlockTokens.splice(quoteBlockTokenIndex+1, 1);
+							}
+						}
+					}
+				}
+			}
+
+			// Create the quote element
+			var quoteElement = MarkdownParserElement.createQuoteElement(this.createElementsRecursive(quoteBlockTokens))
+
+			// Return the paragraph element
+			if (quoteBlockEnd >= tokenArray.length-1) { return quoteElement; }
+			return [quoteElement].concat(this.createElementsRecursive(tokenArray.slice(quoteBlockEnd)));
+		}
+
 		// Paragraph
 		if(this.isPagragraphToken(token))
 		{
@@ -277,7 +358,12 @@ export default class MarkdownParser
 
 			// Find the end of the current paragraph
 			var newlineTokenIndex = paragraphBeginIndex;
-			while(++newlineTokenIndex < tokenArray.length-1 && !(tokenArray[newlineTokenIndex].token == MarkdownTokenScannerNewline.getToken() && tokenArray[newlineTokenIndex].length >= 2));
+			function isParagraphEnd(token) {
+				if(token.token == MarkdownTokenScannerNewline.getToken() && token.length >= 2) return true;
+				if(token.token == MarkdownTokenScannerHeader.getToken()) return true;
+				return false;
+			}
+			while(++newlineTokenIndex < tokenArray.length-1 && !isParagraphEnd(tokenArray[newlineTokenIndex]));
 
 			// Create the paragraph element
 			this.insideParagraph = true;

@@ -5,6 +5,7 @@ import MarkdownTokenScannerImage   from './MarkdownTokenScannerImage'   // Image
 import MarkdownTokenScannerLink    from './MarkdownTokenScannerLink'    // Link scanner
 import MarkdownTokenScannerHeader  from './MarkdownTokenScannerHeader'  // Header scanner
 import MarkdownTokenScannerList    from './MarkdownTokenScannerList'    // List scanner
+import MarkdownTokenScannerQuote   from './MarkdownTokenScannerQuote'   // Quote scanner
 import MarkdownTokenScannerBold    from './MarkdownTokenScannerBold'    // Bold scanner
 import MarkdownTokenScannerItalic  from './MarkdownTokenScannerItalic'  // Italic scanner
 
@@ -71,6 +72,13 @@ export default class MarkdownParserElement
 	static createCodeBlockElement(codeLanguage, codeContent)
 	{
 		return new MarkdownParserElement(MarkdownTokenScannerCode.getToken().repeat(3), [codeLanguage].concat(codeContent));
+	}
+
+	static createQuoteElement(contentElements)
+	{
+		if(contentElements instanceof Array)
+			return new MarkdownParserElement(MarkdownTokenScannerQuote.getToken(), contentElements);
+		return new MarkdownParserElement(MarkdownTokenScannerQuote.getToken(), [contentElements]);
 	}
 
 };

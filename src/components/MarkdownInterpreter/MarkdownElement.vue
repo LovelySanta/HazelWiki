@@ -1,7 +1,21 @@
 <template>
 	<span>
-		<!-- These must be on one line, otherwise it messes with code sections -->
-		<markdown-header v-if="element.token === '#'" :element="element"/><markdown-paragraph v-if="element.token === 'p'" :element="element"/><markdown-newline v-if="element.token === '\n'" :element="element"/><markdown-text v-if="element.token === 'TXT'" :element="element"/><markdown-bold v-if="element.token === '**'" :element="element"/><markdown-italic v-if="element.token === '*'" :element="element"/><markdown-code v-if="element.token === '`'" :element="element"/><markdown-codeblock v-if="element.token === '```'" :element="element"/><markdown-link v-if="element.token === '[]()'" :element="element"/><markdown-image v-if="element.token === '![]()'" :element="element"/><markdown-list v-if="element.token === '-'" :element="element"/>
+		<!-- These commens around the tags must stay, oterwise all elements
+		     must be placed on a single line, as these are messing with the
+		     code tags in vue, resulting in leading and trailing spaces...
+		     This way this code stays a bit readable
+		--><markdown-header    v-if="element.token === '#'"     :element="element" /><!--
+		--><markdown-paragraph v-if="element.token === 'p'"     :element="element" /><!--
+		--><markdown-newline   v-if="element.token === '\n'"    :element="element" /><!--
+		--><markdown-text      v-if="element.token === 'TXT'"   :element="element" /><!--
+		--><markdown-bold      v-if="element.token === '**'"    :element="element" /><!--
+		--><markdown-italic    v-if="element.token === '*'"     :element="element" /><!--
+		--><markdown-code      v-if="element.token === '`'"     :element="element" /><!--
+		--><markdown-codeblock v-if="element.token === '```'"   :element="element" /><!--
+		--><markdown-link      v-if="element.token === '[]()'"  :element="element" /><!--
+		--><markdown-image     v-if="element.token === '![]()'" :element="element" /><!--
+		--><markdown-list      v-if="element.token === '-'"     :element="element" /><!--
+		--><markdown-quote     v-if="element.token === '>'"     :element="element" />
 	</span>
 </template>
 
@@ -17,6 +31,7 @@
 	import MarkdownElementLink      from "./MarkdownElementLink.vue";
 	import MarkdownElementImage     from "./MarkdownElementImage.vue";
 	import MarkdownElementList      from "./MarkdownElementList.vue";
+	import MarkdownElementQuote     from "./MarkdownElementQuote.vue";
 
 	export default {
 		props: {
@@ -37,6 +52,7 @@
 			'markdown-link'      : MarkdownElementLink,
 			'markdown-image'     : MarkdownElementImage,
 			'markdown-list'      : MarkdownElementList,
+			'markdown-quote'     : MarkdownElementQuote,
 		}
 	}
 </script>

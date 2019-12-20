@@ -7,7 +7,6 @@
 		"icon": "info",
 		"links": [
 			{ "to": "/"                  , "label": "Home"               , "type": "markdown", "src": "Home.md"               },
-			{ "to": "/testpage"          , "label": "Testpage"           , "type": "markdown", "src": "Testfile.md"           },
 			{ "to": "/Features"          , "label": "Features"           , "type": "markdown", "src": "FutureFeatures.md"     },
 			{ "to": "/GettingStarted"    , "label": "Getting started"    , "type": "markdown", "src": "GettingStarted.md"     },
 			{ "to": "/SystemRequirements", "label": "System requirements", "type": "markdown", "src": "SystemRequirements.md" },
@@ -27,7 +26,14 @@
 	{
 		"label": "Usefull links",
 		"links": [
-			{ "to": "#",	"label": "Forum",	"icon": "question_answer"	}
+			{ "to": "#", "label": "Forum", "icon": "question_answer", "type": "ignore" }
+		]
+	},
+	{
+		"label": "Dev",
+		"icon": "code",
+		"links": [
+			{ "to": "/testpage", "label": "Testpage markdown", "type": "markdown", "src": "Testfile.md" }
 		]
 	}
 ]

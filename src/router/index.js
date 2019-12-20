@@ -19,8 +19,11 @@ function createRoutes() {
 					src: "./static/content/".concat(routeData.src)
 				}
 			};
+		if (routeData.type == "ignore")
+			return null // ignore this type, surpressing warning
 
-		return null; // return empty if not specified
+		console.warn("unknown route type: ".concat(routeData.type));
+		return null; // return empty if not specified or unknown
 	}
 
 	// Start with the default routes

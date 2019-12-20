@@ -54,6 +54,7 @@
 
 		border: 1px solid $CodeStyler_border;
 		border-left: 3px solid $CodeStyler_border-highlight;
+		border-radius: 3px;
 		box-sizing: border-box;
 
 		line-height: $CodeStyler_line-height;

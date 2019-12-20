@@ -41,6 +41,7 @@ export default class MarkdownParser
 		this.elementArray = [];
 
 		this.insideParagraph = false
+		this.insideQuote = false
 	}
 
 	parse(src)
@@ -230,15 +231,15 @@ export default class MarkdownParser
 
 	isPagragraphToken(token)
 	{
-		return (!this.insideParagraph) && (
-			token.token == MarkdownTokenScanner.getToken() ||                        // Regular text
-			token.token == MarkdownTokenScannerNewline.getToken() ||                 // Newline
-			token.token == MarkdownTokenScannerItalic.getToken() ||                  // Italic text
-			token.token == MarkdownTokenScannerBold.getToken() ||                    // Bold text
-			token.token == MarkdownTokenScannerList.getToken() ||                    // List
-			token.token == MarkdownTokenScannerImage.getToken().join('') ||          // Image
-			token.token == MarkdownTokenScannerLink.getToken().join('') ||           // Link
-			(token.token == MarkdownTokenScannerCode.getToken() && token.length < 3) // Inline code
+		return (this.insideQuote || (!this.insideParagraph) && (
+			token.token == MarkdownTokenScanner.getToken() ||                         // Regular text
+			token.token == MarkdownTokenScannerNewline.getToken() ||                  // Newline
+			token.token == MarkdownTokenScannerItalic.getToken() ||                   // Italic text
+			token.token == MarkdownTokenScannerBold.getToken() ||                     // Bold text
+			token.token == MarkdownTokenScannerList.getToken() ||                     // List
+			token.token == MarkdownTokenScannerImage.getToken().join('') ||           // Image
+			token.token == MarkdownTokenScannerLink.getToken().join('') ||            // Link
+			(token.token == MarkdownTokenScannerCode.getToken() && token.length < 3)) // Inline code
 		);
 	}
 
@@ -342,7 +343,9 @@ export default class MarkdownParser
 			}
 
 			// Create the quote element
+			this.insideQuote = true;
 			var quoteElement = MarkdownParserElement.createQuoteElement(this.createElementsRecursive(quoteBlockTokens))
+			this.insideQuote = false;
 
 			// Return the paragraph element
 			if (quoteBlockEnd >= tokenArray.length-1) { return quoteElement; }
@@ -366,9 +369,11 @@ export default class MarkdownParser
 			while(++newlineTokenIndex < tokenArray.length-1 && !isParagraphEnd(tokenArray[newlineTokenIndex]));
 
 			// Create the paragraph element
+			var insideQuote = this.insideQuote; this.insideQuote = false;
 			this.insideParagraph = true;
 			var paragraphElement = MarkdownParserElement.createParagraphElement(this.createElementsRecursive(tokenArray.slice(paragraphBeginIndex, newlineTokenIndex)));
 			this.insideParagraph = false;
+			this.insideQuote = insideQuote;
 
 			// Return the paragraph element
 			if (newlineTokenIndex >= tokenArray.length - 1) { return paragraphElement; }

@@ -26,7 +26,7 @@
 
 	.line-number{
 		margin: 0 1em 0 -1em;
-		border-right: 1px solid;
+		border-right: 1px solid $CodeStyler_color;
 		display: inline;
 
 		text-align: right;

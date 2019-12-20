@@ -1,7 +1,7 @@
 <template>
 	<span>
 		<!-- These must be on one line, otherwise it messes with code sections -->
-		<markdown-header v-if="element.token === '#'" :element="element"/><markdown-paragraph v-if="element.token === 'p'" :element="element"/><markdown-newline v-if="element.token === '\n'" :element="element"/><markdown-text v-if="element.token === 'TXT'" :element="element"/><markdown-bold v-if="element.token === '**'" :element="element"/><markdown-italic v-if="element.token === '*'" :element="element"/><markdown-code v-if="element.token === '`'" :element="element"/><markdown-codeblock v-if="element.token === '```'" :element="element"/><markdown-link v-if="element.token === '[]()'" :element="element"/><markdown-image v-if="element.token === '![]()'" :element="element"/>
+		<markdown-header v-if="element.token === '#'" :element="element"/><markdown-paragraph v-if="element.token === 'p'" :element="element"/><markdown-newline v-if="element.token === '\n'" :element="element"/><markdown-text v-if="element.token === 'TXT'" :element="element"/><markdown-bold v-if="element.token === '**'" :element="element"/><markdown-italic v-if="element.token === '*'" :element="element"/><markdown-code v-if="element.token === '`'" :element="element"/><markdown-codeblock v-if="element.token === '```'" :element="element"/><markdown-link v-if="element.token === '[]()'" :element="element"/><markdown-image v-if="element.token === '![]()'" :element="element"/><markdown-list v-if="element.token === '-'" :element="element"/>
 	</span>
 </template>
 
@@ -16,6 +16,7 @@
 	import MarkdownElementCodeblock from "./MarkdownElementCodeblock.vue";
 	import MarkdownElementLink      from "./MarkdownElementLink.vue";
 	import MarkdownElementImage     from "./MarkdownElementImage.vue";
+	import MarkdownElementList      from "./MarkdownElementList.vue";
 
 	export default {
 		props: {
@@ -35,6 +36,7 @@
 			'markdown-codeblock' : MarkdownElementCodeblock,
 			'markdown-link'      : MarkdownElementLink,
 			'markdown-image'     : MarkdownElementImage,
+			'markdown-list'      : MarkdownElementList,
 		}
 	}
 </script>

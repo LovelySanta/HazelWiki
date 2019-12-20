@@ -7,6 +7,7 @@ import MarkdownTokenScannerCode    from './MarkdownTokenScannerCode'    // Code 
 import MarkdownTokenScannerImage   from './MarkdownTokenScannerImage'   // Image scanner
 import MarkdownTokenScannerLink    from './MarkdownTokenScannerLink'    // Link scanner
 import MarkdownTokenScannerHeader  from './MarkdownTokenScannerHeader'  // Header scanner
+import MarkdownTokenScannerList    from './MarkdownTokenScannerList'    // List scanner
 import MarkdownTokenScannerBold    from './MarkdownTokenScannerBold'    // Bold scanner
 import MarkdownTokenScannerItalic  from './MarkdownTokenScannerItalic'  // Italic scanner
 
@@ -23,6 +24,7 @@ export default class MarkdownParser
 		this.tokenizer.addScanner(new MarkdownTokenScannerImage());
 		this.tokenizer.addScanner(new MarkdownTokenScannerLink());
 		this.tokenizer.addScanner(new MarkdownTokenScannerHeader());
+		this.tokenizer.addScanner(new MarkdownTokenScannerList());
 		this.tokenizer.addScanner(new MarkdownTokenScannerBold());
 		this.tokenizer.addScanner(new MarkdownTokenScannerItalic());
 
@@ -36,6 +38,18 @@ export default class MarkdownParser
 		this.elementArray = [];
 
 		this.insideParagraph = false
+	}
+
+	parse(src)
+	{
+		// Find tokens in the source
+		this.setSrc(src);
+		this.createTokens();
+		this.cleanupTokens();
+
+		// Create elements from tokens
+		this.createElements();
+		return this.getElements();
 	}
 
 	setSrc(src)
@@ -97,25 +111,56 @@ export default class MarkdownParser
 		while(tokenIndex < this.tokenArray.length)
 		{
 			var token = this.tokenArray[tokenIndex++];
-			var removeToken = false; // will remove this token
 
+			// remove \r token
 			if (token.token == MarkdownTokenScanner.getToken() && token.content === "\r")
 			{
-				removeToken = true; // remove \r token
+				this.tokenArray.splice(--tokenIndex, 1);
 			}
+
+			// remove EOF token
 			else if (token.isEnd())
 			{
-				removeToken = true; // remove EOF token
+				this.tokenArray.splice(--tokenIndex, 1);
 			}
+
+			// remove space after header token
 			else if (token.token == MarkdownTokenScannerHeader.getToken())
 			{
 				var nextToken = this.tokenArray[tokenIndex];
 				if (nextToken.token == MarkdownTokenScanner.getToken() && nextToken.content === " ")
-					this.tokenArray.splice(tokenIndex--, 1); // remove space after header token
+					this.tokenArray.splice(tokenIndex--, 1);
 			}
 
-			if (removeToken)
-				this.tokenArray.splice(--tokenIndex, 1);
+			// remove invalid list tokens + remove spaces before/after valid list tokens
+			else if (token.token == MarkdownTokenScannerList.getToken())
+			{
+				// Check if this token is a valid token
+				var offset = 1;
+				while(++offset <= tokenIndex && this.tokenArray[tokenIndex-offset].token == MarkdownTokenScanner.getToken() && this.tokenArray[tokenIndex-offset].content === " ");
+
+				if(this.tokenArray[tokenIndex-offset].token === MarkdownTokenScannerNewline.getToken())
+				{
+					// Valid list, remove spaces before/after it
+					var prevToken = this.tokenArray[tokenIndex-2];
+					var nextToken = this.tokenArray[tokenIndex];
+					if(prevToken.token == MarkdownTokenScanner.getToken() && prevToken.content === " ")
+					{
+						token.content++;
+						tokenIndex--;
+						this.tokenArray.splice(--tokenIndex, 1); // remove space token before this list token
+					}
+					else if (nextToken.token == MarkdownTokenScanner.getToken() && nextToken.content === " ")
+					{
+						this.tokenArray.splice(tokenIndex--, 1); // remove space after this list token
+					}
+				}
+				else
+				{
+					// Invalid list token, unscan it
+					this.tokenArray[--tokenIndex] = new MarkdownToken(MarkdownTokenScanner.getToken(), token.token, token.token.length);
+				}
+			}
 		}
 	}
 
@@ -158,6 +203,7 @@ export default class MarkdownParser
 			token.token == MarkdownTokenScannerNewline.getToken() ||                 // Newline
 			token.token == MarkdownTokenScannerItalic.getToken() ||                  // Italic text
 			token.token == MarkdownTokenScannerBold.getToken() ||                    // Bold text
+			token.token == MarkdownTokenScannerList.getToken() ||                    // List
 			token.token == MarkdownTokenScannerImage.getToken().join('') ||          // Image
 			token.token == MarkdownTokenScannerLink.getToken().join('') ||           // Link
 			(token.token == MarkdownTokenScannerCode.getToken() && token.length < 3) // Inline code
@@ -361,6 +407,81 @@ export default class MarkdownParser
 			return [linkingElement].concat(this.createElementsRecursive(tokenArray.slice(linkTokenIndex+1)));
 		}
 
+		// List
+		if(token.token == MarkdownTokenScannerList.getToken())
+		{
+			// Get all list items in this list
+			var listItems = []
+			var listItemBeginIndex = 0;
+			while(listItemBeginIndex < tokenArray.length && tokenArray[listItemBeginIndex].token == MarkdownTokenScannerList.getToken())
+			{
+				// Search for the end of this list item
+				var listItemEndIndex = listItemBeginIndex;
+				while(++listItemEndIndex < tokenArray.length && tokenArray[listItemEndIndex].token !== MarkdownTokenScannerNewline.getToken());
+
+				// Add this list item to the list
+				listItems.push(tokenArray.slice(listItemBeginIndex, listItemEndIndex))
+
+				// Get the start of the next list item (account for any amount of newlines)
+				listItemBeginIndex = listItemEndIndex + 1;
+			}
+
+			// Create a recursive list with sublists
+			function createRecursiveListItems(list) {
+				var recursiveListLevel = list[0][0].content;
+				var recursiveList = [];
+
+				// create a list of all elements on this list level
+				var listIndex = -1
+				while(++listIndex < list.length && list[listIndex][0].content <= recursiveListLevel)
+				{
+					var thisListElement = list[listIndex].slice(1);
+
+					// if there is a sub list level, create a list of those recursively
+					var subListIndex = listIndex;
+					while(++subListIndex < list.length && list[subListIndex][0].content > recursiveListLevel);
+					var subListElements = []
+					if(subListIndex-listIndex>1)
+					{
+						subListElements = createRecursiveListItems(list.slice(listIndex+1, subListIndex))
+						//console.log(subListElements)
+					}
+
+					// add this element to the list
+					recursiveList.push([thisListElement, subListElements])
+					listIndex = subListIndex-1;
+				}
+
+				// return the list
+				return recursiveList;
+			}
+			listItems = createRecursiveListItems(listItems);
+
+			// Convert this list to elements
+			function createRecursiveListElements(self, list) {
+				var listIndex = -1;
+				while(++listIndex < list.length)
+				{
+					var listElement = self.createElementsRecursive(list[listIndex][0]);
+					if(listElement.length === undefined) listElement = [listElement];
+
+					var subListElement = null;
+					if(list[listIndex][1].length > 0)
+					{
+						//console.log(list[listIndex][1])
+						subListElement = createRecursiveListElements(self, list[listIndex][1]);
+					}
+					list[listIndex] = [listElement, subListElement];
+				}
+				return MarkdownParserElement.createListElement(list);
+			}
+			var listElement = createRecursiveListElements(this, listItems);
+
+			// Return the list element
+			if (listItemEndIndex == tokenArray.length-1) { return listElement; }
+			return [listElement].concat(this.createElementsRecursive(tokenArray.slice(listItemEndIndex+1)));
+		}
+
 		// Code
 		if(token.token == MarkdownTokenScannerCode.getToken())
 		{
@@ -377,6 +498,9 @@ export default class MarkdownParser
 		}
 
 		console.warn("unknown token: ".concat(token.token))
+		if(tokenArray.length > 1)
+			return this.createElementsRecursive(tokenArray.slice(1));
+		return [];
 	}
 
 	getElements() { return this.elementArray; }

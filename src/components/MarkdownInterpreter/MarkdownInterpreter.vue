@@ -50,15 +50,7 @@
 		},
 		computed: {
 			elements: function() {
-				parser.setSrc(this.text);
-
-				// Find tokens in the source
-				parser.createTokens();
-				parser.cleanupTokens();
-
-				// Create elements from tokens
-				parser.createElements();
-				return parser.getElements();
+				return parser.parse(this.text);
 			}
 		},
 		components: {

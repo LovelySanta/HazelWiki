@@ -256,6 +256,7 @@ export default class MarkdownParser
 		if(tokenArray.length == 0)
 		{
 			console.warn("Parser received an empty array!");
+			console.trace();
 			return [];
 		}
 		var token = tokenArray[0];
@@ -569,7 +570,7 @@ export default class MarkdownParser
 			var listElement = createRecursiveListElements(this, listItems);
 
 			// Return the list element
-			if (listItemEndIndex == tokenArray.length-1) { return listElement; }
+			if (listItemEndIndex == tokenArray.length) { return listElement; }
 			return [listElement].concat(this.createElementsRecursive(tokenArray.slice(listItemEndIndex+1)));
 		}
 

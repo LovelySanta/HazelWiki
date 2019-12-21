@@ -1,8 +1,9 @@
 ### Basic operations
 ```cpp
 int a = 0lu;
-int b = 0.25f;
-int c = -0.25e-5L;
-int d = 01546;
-int e = 0x1546;
+float b = 0.25f;
+double c = -0.25
+long double d = -0.25e-5L;
+int e = 01546;
+int f = 0x1546;
 ```

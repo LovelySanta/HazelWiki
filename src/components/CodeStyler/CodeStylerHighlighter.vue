@@ -21,10 +21,12 @@
 		},
 		mounted() {
 			// For debug purpose only
-			console.log(parser.parse(this.src))
+			parser.setLanguage(this.language);
+			console.log(parser.parse(this.src));
 		},
 		computed: {
 			elements: function() {
+				parser.setLanguage(this.language);
 				return parser.parse(this.src);
 			}
 		},

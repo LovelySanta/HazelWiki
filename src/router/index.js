@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import BasicPage from './../views/BasicPage.vue'
-import Testpage from './../views/Testpage.vue'
 import PageNotFound from './../views/PageNotFound.vue'
 
 const navBarLayout = require('@/assets/NavBarLayout.json');
@@ -31,10 +30,6 @@ function createRoutes() {
 		{
 			path: "*",
 			component: PageNotFound
-		},
-		{
-			path: '/testpage',
-			component: Testpage
 		},
 	]
 

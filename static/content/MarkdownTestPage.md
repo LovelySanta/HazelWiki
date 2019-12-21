@@ -20,7 +20,7 @@ And here you have a link with an image, on a new line!
 Sed quis ultricies massa. `Etiam sollicitudin` in dolor non blandit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque fringilla imperdiet ex. Phasellus maximus velit erat, sit amet tristique diam maximus et. `Vestibulum malesuada eget mi non ullamcorper.` Nunc massa tortor, tincidunt vel malesuada et, efficitur non sem. Nunc maximus eleifend nunc.
 [yess `code linking` ..](http://www.link.com)
 
-```cpp
+```
 int main()
 {
 	// This is just a test

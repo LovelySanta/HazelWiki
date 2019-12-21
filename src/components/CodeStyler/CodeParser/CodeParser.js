@@ -1,5 +1,8 @@
 import CodeLexer from './CodeLexer'
 
+//Cpp
+import CodeTokenScannerCppNumber from './CodeTokenScannerCpp/CodeTokenScannerCppNumber'
+
 export default class CodeParser
 {
 	constructor()
@@ -7,6 +10,32 @@ export default class CodeParser
 		// lexer is used to create tokens
 		this.lexer = new CodeLexer();
 		//this.lexer.addScanner(new CodeTokenScannerData());
+	}
+
+	setLanguage(lang)
+	{
+		lang = lang.toLowerCase();
+		console.log(lang)
+
+		this.lexer.resetScanners(); // Remove all scanners
+
+		// Add scanners specific to a language
+		if(lang == null || lang == "")
+		{
+			// no language specified
+		}
+
+		// cpp language
+		else if(lang == "cpp" || lang == "c++")
+		{
+			this.lexer.addScanner(new CodeTokenScannerCppNumber());
+		}
+
+		// unknown language
+		else
+		{
+			console.warn("unknown code parsing language: " + lang);
+		}
 	}
 
 	parse(src)

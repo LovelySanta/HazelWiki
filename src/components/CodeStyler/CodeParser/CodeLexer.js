@@ -5,6 +5,11 @@ export default class CodeLexer {
 		this.scanner = new CodeTokenScanner();
 	}
 
+	resetScanners()
+	{
+		this.scanner = new CodeTokenScanner();
+	}
+
 	addScanner(scannerToAdd)
 	{
 		this.scanner.addScanner(scannerToAdd);

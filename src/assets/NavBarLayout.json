@@ -33,7 +33,8 @@
 		"label": "Dev",
 		"icon": "code",
 		"links": [
-			{ "to": "/testpage", "label": "Testpage markdown", "type": "markdown", "src": "Testfile.md" }
+			{ "to": "/MarkdownTestPage"       , "label": "Testpage markdown"   , "type": "markdown", "src": "MarkdownTestPage.md"        },
+			{ "to": "/CodeHighlighterTestPage", "label": "Testpage highlighter", "type": "markdown", "src": "CodeHighlighterTestPage.md" }
 		]
 	}
 ]

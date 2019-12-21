@@ -5,6 +5,7 @@ import CodeTokenScannerCppIgnore      from './CodeTokenScannerCpp/CodeTokenScann
 import CodeTokenScannerCppNumber      from './CodeTokenScannerCpp/CodeTokenScannerCppNumber'
 import CodeTokenScannerCppParenthesis from './CodeTokenScannerCpp/CodeTokenScannerCppParenthesis'
 import CodeTokenScannerCppTypes       from './CodeTokenScannerCpp/CodeTokenScannerCppTypes'
+import CodeTokenScannerCppOperator    from './CodeTokenScannerCpp/CodeTokenScannerCppOperator'
 
 export default class CodeParser
 {
@@ -34,6 +35,7 @@ export default class CodeParser
 			this.lexer.addScanner(new CodeTokenScannerCppIgnore());
 			this.lexer.addScanner(new CodeTokenScannerCppParenthesis());
 			this.lexer.addScanner(new CodeTokenScannerCppTypes());
+			this.lexer.addScanner(new CodeTokenScannerCppOperator());
 			this.lexer.addScanner(new CodeTokenScannerCppNumber());
 		}
 

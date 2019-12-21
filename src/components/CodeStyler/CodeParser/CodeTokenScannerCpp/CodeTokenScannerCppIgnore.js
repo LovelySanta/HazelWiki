@@ -4,10 +4,6 @@ import CodeTokenScanner from '../CodeTokenScanner'
 
 export default class CodeTokenScannerCppIgnore extends CodeTokenScanner
 {
-	/* Abstract base class, this class cannot scan for specific tokens,
-	 * Instead, it will detect everything that specific scanners cannot
-	 * detect themselves.
-	 */
 	constructor()
 	{
 		super();

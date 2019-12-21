@@ -33,7 +33,9 @@ export default class CodeTokenScanner
 		}
 
 		// It is not registered, so this scanner recognizes it as plain text
-		return new CodeToken(CodeTokenScanner.getToken(), src.charAt(0), 1);
+		var index = 0;
+		while(++index < src.length && "abcdefghijklmnopqrstuvwxyz_".indexOf(src.charAt(index).toLowerCase()) >= 0);
+		return new CodeToken(CodeTokenScanner.getToken(), src.substr(0, index), index);
 	}
 
 	unscan(token)

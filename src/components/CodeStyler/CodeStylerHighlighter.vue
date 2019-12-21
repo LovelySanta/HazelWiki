@@ -3,6 +3,10 @@
 </template>
 
 <script>
+	import CodeParser from './CodeParser/CodeParser.js'
+
+	const parser = new CodeParser();
+
 	export default {
 		props: {
 			src: {
@@ -14,7 +18,16 @@
 				required: false,
 				default: ""
 			}
-		}
+		},
+		mounted() {
+			// For debug purpose only
+			console.log(parser.parse(this.src))
+		},
+		computed: {
+			elements: function() {
+				return parser.parse(this.src);
+			}
+		},
 	}
 </script>
 

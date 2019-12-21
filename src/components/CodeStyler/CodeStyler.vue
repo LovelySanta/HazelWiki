@@ -2,14 +2,14 @@
 	<div  class="code-styler">
 		<pre>
 			<code-styler-line-number :amount="numberOfLines" :visible="lineNumbers" />
-			<code-styler-code :src="src" :language="language" />
+			<code-styler-highlighter :language="language" :src="src" />
 		</pre>
 	</div>
 </template>
 
 <script>
 	import CodeStylerLineNumber from "./CodeStylerLineNumber.vue"
-	import CodeStylerCode from "./CodeStylerCode.vue"
+	import CodeStylerHighlighter from "./CodeStylerHighlighter.vue"
 
 	export default {
 		props: {
@@ -35,7 +35,7 @@
 		},
 		components: {
 			'code-styler-line-number': CodeStylerLineNumber,
-			'code-styler-code': CodeStylerCode
+			'code-styler-highlighter': CodeStylerHighlighter
 		}
 	}
 </script>

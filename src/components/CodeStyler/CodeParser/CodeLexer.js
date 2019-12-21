@@ -1,8 +1,8 @@
-import MarkdownTokenScanner from './MarkdownTokenScanner'
+import CodeTokenScanner from './CodeTokenScanner'
 
-export default class MarkdownLexer {
+export default class CodeLexer {
 	constructor() {
-		this.scanner = new MarkdownTokenScanner();
+		this.scanner = new CodeTokenScanner();
 	}
 
 	addScanner(scannerToAdd)

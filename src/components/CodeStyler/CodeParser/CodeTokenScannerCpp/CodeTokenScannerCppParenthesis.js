@@ -10,13 +10,13 @@ export default class CodeTokenScannerCppParenthesis extends CodeTokenScanner
 		this.token = CodeTokenScannerCppParenthesis.getToken();
 	}
 
-	static getToken() { return 'PARENTHESE'; }
+	static getToken() { return 'PARENTHESIS'; }
 
 	scan(source)
 	{
 		if("(){}[]".indexOf(source.charAt(0)) >= 0)
-			return new CodeToken(this.token, source.charAt(0), 1); // ignore character found
-		return CodeToken.nullToken(); // no character to ignore
+			return new CodeToken(this.token, source.charAt(0), 1); // found a parenthesis
+		return CodeToken.nullToken(); // no parenthesis found
 	}
 
 	unscan(token)

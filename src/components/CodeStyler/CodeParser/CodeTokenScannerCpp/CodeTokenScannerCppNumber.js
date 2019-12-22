@@ -106,7 +106,7 @@ export default class CodeTokenScannerCppNumber extends CodeTokenScanner
 			return new CodeToken(this.token, source.substr(0, index), index); // number found
 		}
 
-		return CodeToken.nullToken(); // no number
+		return CodeToken.nullToken(); // no number found
 	}
 
 	unscan(token)

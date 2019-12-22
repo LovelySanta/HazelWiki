@@ -21,12 +21,13 @@ export default class CodeTokenScannerCppOperator extends CodeTokenScanner
 
 	scan(source)
 	{
-		for (var index = 0; index < this.types.length; ++index) {
+		for (var index = 0; index < this.types.length; ++index)
+		{
 			var type = this.types[index];
 			if(source.substr(0, type.length).toLowerCase() == type)
-				return new CodeToken(this.token, source.substr(0, type.length), type.length); // found a type token
+				return new CodeToken(this.token, source.substr(0, type.length), type.length); // found an operator token
 		}
-		return CodeToken.nullToken(); // no character to ignore
+		return CodeToken.nullToken(); // no operator token found
 	}
 
 	unscan(token)

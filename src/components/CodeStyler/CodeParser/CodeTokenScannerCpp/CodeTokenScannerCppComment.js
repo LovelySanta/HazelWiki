@@ -29,7 +29,7 @@ export default class CodeTokenScannerCppComment extends CodeTokenScanner
 				return new CodeToken(this.token, source.substr(0, index+2), index+2);
 			}
 		}
-		return CodeToken.nullToken(); // no character to ignore
+		return CodeToken.nullToken(); // no comment found
 	}
 
 	unscan(token)

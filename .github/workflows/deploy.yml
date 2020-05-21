@@ -3,10 +3,10 @@ name: HazelWiki
 on:
   pull_request:
     branches:
-      - deployTest2
+      - deployTest
   push:
     branches:
-      - deployTest2
+      - deployTest
 
 jobs:
   deploy:
@@ -27,11 +27,16 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
+
     - run: npm install
     - run: npm run build
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.HAZEL_WIKI_DEPLOY_KEY }}
-        publish_dir: ./build
+        #github_token: ${{ secrets.HAZEL_WIKI_DEPLOY_KEY }}
+        personal_token: ${{ secrets.HAZEL_WIKI_DEPLOY_KEY }}
+        publish_dir: ./build # A target directory to deploy to GitHub Pages
+        publish_branch: release # A target branch to deploy to GitHub Pages
+        user_name: 'HazelWiki[bot]' # Custom user
+        user_email: 'HazelWiki[bot]@users.noreply.github.com'

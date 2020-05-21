@@ -34,9 +34,10 @@ jobs:
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
-        #github_token: ${{ secrets.HAZEL_WIKI_DEPLOY_KEY }}
-        personal_token: ${{ secrets.HAZEL_WIKI_DEPLOY_KEY }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        #personal_token: ${{ secrets.HAZEL_WIKI_DEPLOY_KEY }}
         publish_dir: ./build # A target directory to deploy to GitHub Pages
-        publish_branch: release # A target branch to deploy to GitHub Pages
-        user_name: 'HazelWiki[bot]' # Custom user
-        user_email: 'HazelWiki[bot]@users.noreply.github.com'
+        publish_branch: gh-pages # A target branch to deploy to GitHub Pages
+        user_name: 'HazelWiki' # Custom user
+        user_email: 'HazelWiki@users.noreply.github.com'
+        commit_message: Deploy

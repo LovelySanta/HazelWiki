@@ -1,4 +1,4 @@
-name: HazelWiki deploy
+name: HazelWiki
 
 on:
   pull_request:

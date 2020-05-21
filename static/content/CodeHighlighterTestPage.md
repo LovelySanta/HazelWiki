@@ -1,5 +1,8 @@
 ### Basic operations
 ```cpp
+#include "file.h"
+
+#define macro somethingElse
 int intTest = 0lu;
 float floatTest = 0.25f;
 double double_test = -0.25
@@ -11,12 +14,13 @@ String string2 = "This is a \"string\"";
 char character = '\t';
 b = 2*5;
 
-void TestFnc(void)
+void TestFnc(int par1, float par2)
 {
 	/* This is a multiline
 	 * comment that is spanning
 	 * over multiple lines
 	 */
-	int var = 2; // Some single line comment
+	int var = par1 + par2; // Some single line comment
 }
+function(arg1, arg2);
 ```

@@ -3,10 +3,10 @@ name: HazelWiki deploy
 on:
   pull_request:
     branches:
-      - deployTest
+      - deployTest2
   push:
     branches:
-      - deployTest
+      - deployTest2
 
 jobs:
   deploy:

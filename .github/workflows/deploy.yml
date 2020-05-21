@@ -1,12 +1,12 @@
-name: HazelWiki deploy
+name: HazelWiki
 
 on:
   pull_request:
     branches:
-      - deployTest
+      - deployTest2
   push:
     branches:
-      - deployTest
+      - deployTest2
 
 jobs:
   deploy:

@@ -1,9 +1,6 @@
 name: HazelWiki
 
 on:
-  pull_request:
-    branches:
-      - deployTest
   push:
     branches:
       - deployTest

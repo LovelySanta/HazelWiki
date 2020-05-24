@@ -7,9 +7,10 @@ on:
 
 jobs:
   deploy:
+    if: github.repository == 'LovelySanta/HazelWiki'
     runs-on: ubuntu-18.04
     steps:
-    - name: Checkout
+    - name: Checkout HazelWiki
       uses: actions/checkout@v2
 
     - name: Setup Node
@@ -25,10 +26,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - run: npm install
-    - run: npm run build
+    - name: Setup HazelWiki
+      run: npm install
 
-    - name: Deploy
+    - name: Build HazelWiki
+      run: npm run build
+
+    - name: Deploy HazelWiki
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -3,7 +3,7 @@ name: HazelWiki
 on:
   push:
     branches:
-      - deployTest
+      - master
 
 jobs:
   deploy:
